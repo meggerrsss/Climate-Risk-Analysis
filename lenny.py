@@ -3,7 +3,6 @@ from collections import defaultdict
 from pprint import pprint
 import requests
 
-
 SAMPLE_URL = "https://dd.weather.gc.ca/climate/observations/normals/csv/1981-2010/ON/climate_normals_ON_6016527_1981-2010.csv"
 def fetch_csv_from_env_can(csv_url):
     with requests.Session() as s:
