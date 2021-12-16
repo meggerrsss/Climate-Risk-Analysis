@@ -4,3 +4,8 @@ Meghan
 
 Dec 14 4h 
 Dec 15 
+
+
+
+tasks that can be automated with ECCC normals data
+visibility, degree days, temperatures, precipitation

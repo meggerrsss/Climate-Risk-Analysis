@@ -4,14 +4,14 @@ from pprint import pprint
 import requests
 
 
-# importing from web
+# importing from web https://dd.weather.gc.ca/climate/observations/
 siteid = 6016527
 province = 'ON'
 #url = "https://dd.weather.gc.ca/climate/observations/normals/csv/1981-2010/" + province + "/climate_normals_" + province + "_" + siteid + "_1981-2010.csv"
-url = 'example.csv'
+url = 'example3.csv'
 
 with open(url) as f:
-    reader = list(csv.reader(f))
+  reader = list(csv.reader(f))
 
 
 def fetchECCC(urlname):
@@ -41,11 +41,33 @@ def climatetable(csvlist):
 #results out of the report 
 
 def drydays(report):
+  # 365 - Days with precipitation (year)
   for row in report['Days with Precipitation']:
     if row[0] == ">= 0.2 mm":
       return 365 - float(row[-2])
   raise ValueError
 
+def annualsnowdepth(report):
+  # Annual Snow Depth (year)
+  for row in report['Precipitation']:
+    if row[0] == "Average Snow Depth (cm)":
+      return float(row[-2])
+  raise ValueError
+  #this one could be better calculated by averaging the 12 monthly things weighted by number of days, instead of taking the annual number at face value. more decimal points available but not really enough data to rely on it, so just sampling the year value here for now
+
+def averagewintersnowdepth(report):
+  # Average Oct-Apr Snow Depth (year)
+  for row in report['Precipitation']:
+    if row[0] == "Average Snow Depth (cm)":
+      octapr = row[1:5]+row[10:13]
+      avg = sum([float(x) for x in octapr])
+      return avg/7
+  raise ValueError
+
+
+
 chunked_report = climatetable(reader)
 
-print(drydays(chunked_report))
+print("Dry Days: " + str(drydays(chunked_report)))
+print("Annual Snow Depth: " + str(annualsnowdepth(chunked_report)))
+print("Average Winter Snow Depth: %.2f" % averagewintersnowdepth(chunked_report))
