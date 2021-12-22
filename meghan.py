@@ -129,6 +129,79 @@ def heatingdegreedays(report):
   raise ValueError
 
 
+def annualprecipitation(report):
+  # Total Annual Precipitation
+  # Total amount of precipititation in mm per year. 
+  for row in report['Precipitation']:
+    if row[0] == 'Precipitation (mm)':
+      return float(row[-2])
+  raise ValueError
+
+
+def springprecipitation(report):
+  # Total Spring Precipitation
+  # Total amount of precipititation in mm per spring (Mar, Apr, May). 
+  for row in report['Precipitation']:
+    if row[0] == 'Precipitation (mm)':
+      return float(row[3])+float(row[4])+float(row[5])
+  raise ValueError
+
+
+def summerprecipitation(report):
+  # Total Summer Precipitation
+  # Total amount of precipititation in mm per summer (Jun, Jul, Aug). 
+  for row in report['Precipitation']:
+    if row[0] == 'Precipitation (mm)':
+      return float(row[6])+float(row[7])+float(row[8])
+  raise ValueError
+  
+
+def fallprecipitation(report):
+  # Total Fall Precipitation
+  # Total amount of precipititation in mm per fall (Sep, Oct, Nov). 
+  for row in report['Precipitation']:
+    if row[0] == 'Precipitation (mm)':
+      return float(row[9])+float(row[10])+float(row[11])
+  raise ValueError
+  
+
+def winterprecipitation(report):
+  # Total Winter Precipitation
+  # Total amount of all precipititation types in mm per winter (Dec, Jan, Feb). 
+  for row in report['Precipitation']:
+    if row[0] == 'Precipitation (mm)':
+      return float(row[12])+float(row[1])+float(row[2])
+  raise ValueError
+  
+
+def extremesnowfalldays(report):
+  # Extreme Snowfall Totals
+  # Days per year with conditions (>25 cm).
+  for row in report['Days With Snowfall']:
+    if row[0] == '>= 25 cm':
+      return float(row[-2])
+  raise ValueError
+  
+
+def annualsnowfalltotal(report):
+  # Extreme Snowfall Total
+  # Annual snowfall total; cm (January – December) per year.
+  for row in report['Precipitation']:
+    if row[0] == 'Snowfall (cm)':
+      return float(row[-2])
+  raise ValueError
+  
+
+def strongwinddays(report):
+  # Strong Winds
+  # Maximum Annual instantaneous wind gust (days having wind gusts >63 km/h per year). Baseline (1994 – 2009) from regional analysis.
+  for row in report['Wind']:
+    if row[0] == 'Days with Winds >= 63 km/h':
+      return float(row[-2])
+  raise ValueError
+
+
+
 chunked_report = climatetable(reader)
 # print("- title: %.1f" % function(chunked_report))
 print("- Annual Snow Depth: %.1f" % annualsnowdepth(chunked_report))
@@ -140,3 +213,11 @@ print("- Low Temperatures: %.1f" % lowtemperature(chunked_report))
 print("- Very Cold Days: %.1f" % verycolddays(chunked_report))
 print("- Cooling Degree Days: %.1f" % coolingdegreedays(chunked_report))
 print("- Heating Degree Days: %.1f" % heatingdegreedays(chunked_report))
+print("- Total Precipitation (Annual): %.1f" % annualprecipitation(chunked_report))
+print("- Total Precipitation (Spring): %.1f" % springprecipitation(chunked_report))
+print("- Total Precipitation (Summer): %.1f" % summerprecipitation(chunked_report))
+print("- Total Precipitation (Fall): %.1f" % fallprecipitation(chunked_report))
+print("- Total Precipitation (Winter): %.1f" % winterprecipitation(chunked_report))
+print("- Extreme Snowfall Totals: %.1f" % extremesnowfalldays(chunked_report))
+print("- Annual Snowfall Total: %.1f" % annualsnowfalltotal(chunked_report))
+print("- Strong Winds: %.1f" % strongwinddays(chunked_report))
