@@ -1,17 +1,6 @@
 import csv
 from collections import defaultdict
-from pprint import pprint
 import requests
-
-
-# importing from web https://dd.weather.gc.ca/climate/observations/
-siteid = 6016527
-province = 'ON'
-#url = "https://dd.weather.gc.ca/climate/observations/normals/csv/1981-2010/" + province + "/climate_normals_" + province + "_" + siteid + "_1981-2010.csv"
-url = 'example3.csv'
-
-with open(url) as f:
-  reader = list(csv.reader(f))
 
 
 def fetchECCC(urlname):
@@ -202,22 +191,4 @@ def strongwinddays(report):
 
 
 
-chunked_report = climatetable(reader)
-# print("- title: %.1f" % function(chunked_report))
-print("- Annual Snow Depth: %.1f" % annualsnowdepth(chunked_report))
-print("- Average Winter Snow Depth: %.1f" % averagewintersnowdepth(chunked_report))
-print("- Dry Days: %.1f" % drydays(chunked_report))
-print("- High Temperatures: %.1f" % hightemperature(chunked_report))
-print("- Very Hot Days: %.1f" % veryhotdays(chunked_report))
-print("- Low Temperatures: %.1f" % lowtemperature(chunked_report))
-print("- Very Cold Days: %.1f" % verycolddays(chunked_report))
-print("- Cooling Degree Days: %.1f" % coolingdegreedays(chunked_report))
-print("- Heating Degree Days: %.1f" % heatingdegreedays(chunked_report))
-print("- Total Precipitation (Annual): %.1f" % annualprecipitation(chunked_report))
-print("- Total Precipitation (Spring): %.1f" % springprecipitation(chunked_report))
-print("- Total Precipitation (Summer): %.1f" % summerprecipitation(chunked_report))
-print("- Total Precipitation (Fall): %.1f" % fallprecipitation(chunked_report))
-print("- Total Precipitation (Winter): %.1f" % winterprecipitation(chunked_report))
-print("- Extreme Snowfall Totals: %.1f" % extremesnowfalldays(chunked_report))
-print("- Annual Snowfall Total: %.1f" % annualsnowfalltotal(chunked_report))
-print("- Strong Winds: %.1f" % strongwinddays(chunked_report))
+
