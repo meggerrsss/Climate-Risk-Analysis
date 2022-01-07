@@ -10,13 +10,14 @@ def collectalldailies(siteID):
   foldername = "https://dd.weather.gc.ca/climate/observations/daily/csv/" + findprov(siteID)+"/" # string of location of all the files
   filenameprefix = "https://dd.weather.gc.ca/climate/observations/daily/csv/"+ findprov(siteID) + "/climate_daily_" + findprov(siteID) + "_" + str(siteID) #only want files that start with this 
 
-  # QUICK TEST
-  print(foldername == "https://dd.weather.gc.ca/climate/observations/daily/csv/PE/")
-
-
-  # opening the folder to list out the files
+   # opening the folder to list out the files
   folder = requests.get(foldername, timeout=10)
-  folder = folder.text.split('\n'))
+  folder = folder.text.split('\n')[8:-4]  # head/food stuff eliminated
+
+  #slicing each string scraped from the list of files to get all of their names
+  for f in range(len(folder)):
+    folder[f] = folder[f][49:-71]  # this will need to be better written for finding the a href characters lol
+
   print(folder[0])
 
   # apparently better to grow a list then convert to frame than it is to grow a frame?
