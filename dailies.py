@@ -20,6 +20,9 @@ def collectalldailies(siteID):
 
   print(folder[0])
 
+
+   #everything below here does not work since os doesn't handle https very well, apparently
+   # work 1/7/2022 ended here
   # apparently better to grow a list then convert to frame than it is to grow a frame?
   data = []
   for filename in folder:
