@@ -8,6 +8,7 @@ authors = ["meggerrsss <<>>"]
 python = "^3.8"
 pandas = "^1.3.5"
 prettyprint = "^0.1.5"
+bs4 = "^0.0.1"
 
 [tool.poetry.dev-dependencies]
 

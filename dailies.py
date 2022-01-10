@@ -5,32 +5,36 @@
 import pandas as pd
 from siteIDdb import findprov
 import requests
+from bs4 import BeautifulSoup
 
-def collectalldailies(siteID):
+
+def collectalldailies(siteID, limit=-1):
   foldername = "https://dd.weather.gc.ca/climate/observations/daily/csv/" + findprov(siteID)+"/" # string of location of all the files
   filenameprefix = "https://dd.weather.gc.ca/climate/observations/daily/csv/"+ findprov(siteID) + "/climate_daily_" + findprov(siteID) + "_" + str(siteID) #only want files that start with this 
 
    # opening the folder to list out the files
-  folder = requests.get(foldername, timeout=10)
-  folder = folder.text.split('\n')[8:-4]  # head/food stuff eliminated
+  folder = requests.get(foldername, timeout=30)
+  soup = BeautifulSoup(folder.text, 'html.parser')
+  
 
-  #slicing each string scraped from the list of files to get all of their names
-  for f in range(len(folder)):
-    folder[f] = folder[f][49:-71]  # this will need to be better written for finding the a href characters lol
+  #some testing for name filtering
+  intermediate = soup.find_all('a')
+  print(intermediate.get('href'))
+  #print(soup.find_all('a'))
 
-  print(folder[0])
 
-
-   #everything below here does not work since os doesn't handle https very well, apparently
-   # work 1/7/2022 ended here
+  #for a in soup.findall(a):
+  #requests.get(href)
+  
   # apparently better to grow a list then convert to frame than it is to grow a frame?
-  data = []
-  for filename in folder:
-    if filename[0:84] == filenameprefix:
-      with os.scandir(filename) as d:
-        data = data.append(d)
- 
-  print(data)   
+  #data = []
+  #for line in soup.find_all(a):
+  #  filename = line.get('a href')
+  #  if foldername+filename[0:84] == filenameprefix:
+  #    with os.scandir(filename) as d:
+  #     data = data.append(d)
+  #     time.sleep(0.5)
+  #     print(data)   
 
   #dailydata = pd.read_csv(siteIDurl)
   #return sites 
