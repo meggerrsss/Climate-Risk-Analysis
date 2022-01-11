@@ -3,15 +3,6 @@ from collections import defaultdict
 import requests
 
 
-def fetchECCC(urlname):
-  # inputs the url name (ECCC link or local like 'example.csv')
-  with requests.Session() as s:
-    download = s.get(urlname)
-    decoded = download.content.decode("ISO-8859-1")
-    reader = csv.reader(decoded.splitlines())
-  return list(reader)
-
-
 def climatetable(csvlist):
   # csvlist = output from list(csv.reader(file)):
   # returns a list of list of strings for every line and cell in the original csv 

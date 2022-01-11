@@ -6,40 +6,30 @@ import pandas as pd
 from siteIDdb import findprov
 import requests
 from bs4 import BeautifulSoup
-from meghan import fetchECCC
+from fetchdata import fetchECCC
 
 
 def collectalldailies(siteID, limit=-1):
-    foldername = "https://dd.weather.gc.ca/climate/observations/daily/csv/" + findprov(
-        siteID) + "/"  # string of location of all the files
-    filenameprefix = "https://dd.weather.gc.ca/climate/observations/daily/csv/" + findprov(
-        siteID) + "/climate_daily_" + findprov(siteID) + "_" + str(
-            siteID)  #only want files that start with this
+  foldername = "https://dd.weather.gc.ca/climate/observations/daily/csv/" + findprov(
+    siteID) + "/"  # string of location of all the files
+  filenameprefix = "https://dd.weather.gc.ca/climate/observations/daily/csv/" + findprov(siteID) + "/climate_daily_" + findprov(siteID) + "_" + str(siteID)  #only want files that start with this
 
-    # opening the folder to list out the files
-    folder = requests.get(foldername, timeout=30)
-    soup = BeautifulSoup(folder.text, 'html.parser')
+  # opening the folder to list out the files
+  folder = requests.get(foldername, timeout=360)
+  soup = BeautifulSoup(folder.text, 'html.parser')
 
-    #some testing for name filtering
-    # intermediate = soup.find_all('a')
-    # print(intermediate.get('href'))
-    #print(soup.find_all('a'))
-
-    #for a in soup.findall(a):
-    #requests.get(href)
-
-    # apparently better to grow a list then convert to frame than it is to grow a frame?
-    header = []
-    data = []
-    for link in soup.find_all('a'):
-        href = link.get("href")
-        if siteID in href and href.endswith(".csv"): 
-          print("fetching "+href)
-          d = fetchECCC(foldername + href)
-          header = d[0]
-          data += d[1:]
+  #fetching the data into a csv-ish list, which writes to file later (currently in main)
+  header = []
+  data = []
+  for link in soup.find_all('a'):
+    href = link.get("href")
+    if siteID in href and href.endswith(".csv"): 
+      print("fetching "+href)
+      d = fetchECCC(foldername + href)
+      header = d[0]
+      data += d[1:]
     data.insert(0,header)      
     return data
 
-    #dailydata = pd.read_csv(siteIDurl)
-    #return sites
+  #dailydata = pd.read_csv(siteIDurl)
+  #return sites
