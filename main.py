@@ -16,6 +16,10 @@ def main():
 
   # this function isn't done yet 
   dailydata = collectalldailies(siteid)
+  with open("example5.csv", 'w') as f:
+    csvwriter = csv.writer(f)
+    for line in dailydata:
+      csvwriter.writerow(line)
 
   chunked_reader = climatetable(reader)
   reports.final_report(chunked_reader)
