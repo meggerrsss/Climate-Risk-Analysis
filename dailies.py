@@ -27,6 +27,7 @@ def collectalldailies(siteID, limit=-1):
       print("fetching "+href)
       d = fetchECCC(foldername + href)
       header = d[0]
+      print(header)
       data += d[1:]
     data.insert(0,header)      
     return data

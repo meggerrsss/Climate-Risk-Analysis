@@ -4,8 +4,10 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
+
+
 # using example4.csv for now
-data = pd.read_csv('example4.csv')
+data = pd.read_csv('temporarydailydata.csv')
 
 print(data)
 headings = data.head()
