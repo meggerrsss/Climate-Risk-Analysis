@@ -4,12 +4,13 @@ import reports
 from siteIDdb import findprov
 from dailies import collectalldailies
 from fetchdata import fetchECCC
-#import graphdaily
+from graphdaily import runplot
 
-def main(siteid, scrapedailies, climatenormals = True):
+def main(siteid, scrapedailies = False, climatenormals = True, rplot = False):
   # importing from web https://dd.weather.gc.ca/climate/observations/
   #siteid = '6016527' #ottawa --- requesting list of datafiles is too slow to run
   #siteid = '8300060' #pei 
+  print("siteid: ", siteid)
   province = findprov(siteid)
   print("province: ", province)
   normalsurl = "https://dd.weather.gc.ca/climate/observations/normals/csv/1981-2010/" + province + "/climate_normals_" + province + "_" + siteid + "_1981-2010.csv"
@@ -26,6 +27,9 @@ def main(siteid, scrapedailies, climatenormals = True):
       for line in dailydata:
         csvwriter.writerow(line)
     print("file written")
+  if rplot: 
+    runplot()
+
 
   if climatenormals:
     #data entirely from the climate normals summaries
@@ -34,7 +38,10 @@ def main(siteid, scrapedailies, climatenormals = True):
 
 if __name__ == "__main__":
   # PEI can scrape data but not use the climate normals (yet)
-  main('8300300', True, False)
+  #main('8300300', True, False, True)
+
+  # if rerunning from data that already exists
+  main('8300300', False, False, True)
 
   # OTT can use the climate normals but not scrape data (timeout error)
-  #main('6016527', False, True)
+  #main('6016527', False, True, False)

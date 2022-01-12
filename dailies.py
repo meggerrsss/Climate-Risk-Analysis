@@ -26,7 +26,6 @@ def collectalldailies(siteID, limit=-1):
     if siteID in href and href.endswith(".csv"): 
       print("fetching "+href)
       d = fetchECCC(foldername + href)
-      print(d[1:])
       if header == []: header = d[0]
       data += d[1:]
   data.insert(0,header)      
