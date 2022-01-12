@@ -1,5 +1,6 @@
 import requests
 import csv
+from collections import defaultdict
 
 
 def fetchECCC(urlname):

@@ -17,7 +17,7 @@ def collectalldailies(siteID, limit=-1):
   # opening the folder to list out the files
   folder = requests.get(foldername, timeout=360)
   soup = BeautifulSoup(folder.text, 'html.parser')
-
+  
   #fetching the data into a csv-ish list, which writes to file later (currently in main)
   header = []
   data = []
@@ -26,11 +26,12 @@ def collectalldailies(siteID, limit=-1):
     if siteID in href and href.endswith(".csv"): 
       print("fetching "+href)
       d = fetchECCC(foldername + href)
-      header = d[0]
-      print(header)
+      print(d[1:])
+      if header == []: header = d[0]
       data += d[1:]
-    data.insert(0,header)      
-    return data
+      data.insert(0,header)      
+  return data
+  print("finished collecting")
 
   #dailydata = pd.read_csv(siteIDurl)
   #return sites
