@@ -29,7 +29,7 @@ def collectalldailies(siteID, limit=-1):
       print(d[1:])
       if header == []: header = d[0]
       data += d[1:]
-      data.insert(0,header)      
+  data.insert(0,header)      
   return data
   print("finished collecting")
 
