@@ -14,6 +14,9 @@ def runplot(col = 7):
 
 
   plt.close("all")
-  data.plot(x="Date/Time", y=["Max Temp (°C)"])
-  plt.show()
+  data.plot(x="Date/Time", y=["Max Temp (°C)"], figsize=(30, 18))
+  
 
+  plt.savefig('image.png')
+  print("plotting saved")
+  plt.show()
