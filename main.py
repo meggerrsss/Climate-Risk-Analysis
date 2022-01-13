@@ -28,20 +28,21 @@ def main(siteid, scrapedailies = False, climatenormals = True, rplot = False):
         csvwriter.writerow(line)
     print("file written")
   if rplot: 
+    if not scrapedailies: print("plotting without downloading fresh...")
     runplot()
 
 
   if climatenormals:
     #data entirely from the climate normals summaries
     chunked_reader = climatetable(normalsreader)
-    reports.final_report(chunked_reader)
+    reports.final_report(chunked_reader, style = "csv")
 
 if __name__ == "__main__":
   # PEI can scrape data but not use the climate normals (yet)
   #main('8300300', True, False, True)
 
   # if rerunning from data that already exists
-  main('8300300', False, False, True)
+  #main('8300300', False, False, True)
 
   # OTT can use the climate normals but not scrape data (timeout error)
-  #main('6016527', False, True, False)
+  main('6016527', False, True, False)
