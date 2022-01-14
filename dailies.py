@@ -19,11 +19,15 @@ def collectalldailies(siteID, limit=-1):
   soup = BeautifulSoup(folder.text, 'html.parser')
   
   #fetching the data into a csv-ish list, which writes to file later (currently in main)
+  years = range(1981, 2011) #unclear if assigning it here vs main makes more sense
   header = []
   data = []
+  #year = 0000
   for link in soup.find_all('a'):
     href = link.get("href")
-    if siteID in href and href.endswith(".csv"): 
+    #if len(href)>30 and href.endswith(".csv"): year = int(href[25:29])
+    #print(year, year in years)
+    if siteID in href and href.endswith(".csv") and int(href[25:29]) in years: 
       print("fetching "+href)
       d = fetchECCC(foldername + href)
       if header == []: header = d[0]

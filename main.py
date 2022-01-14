@@ -18,8 +18,10 @@ def main(siteid, scrapedailies = False, climatenormals = True, rplot = False):
   normalsreader = fetchECCC(normalsurl)
 
   #scrapedailies = True 
+  years = range(1981, 2011)
   print("scrape daily data? ", scrapedailies)
   if scrapedailies:
+    # build filename based off siteID
   # this section imports all daily data from ECCC at a specific site ID into a saved file, currently very slow for non-PEI siteIDs
     dailydata = collectalldailies(siteid)
     with open("temporarydailydata.csv", 'w') as f:
@@ -37,7 +39,7 @@ def main(siteid, scrapedailies = False, climatenormals = True, rplot = False):
     #data entirely from the climate normals summaries
     print("scraping from climate normals pages...")
     chunked_reader = climatetable(normalsreader)
-    reports.final_report(chunked_reader, style = "strcsv")
+    reports.final_report(chunked_reader, style = "csv")
 
 if __name__ == "__main__":
   # ARGUMENTS REMINDER 
@@ -51,3 +53,4 @@ if __name__ == "__main__":
 
   # OTT can use the climate normals but not scrape data (timeout error)
   #main('6016527', False, True, False)
+  # change line 40 from str to csv for csv output demo
