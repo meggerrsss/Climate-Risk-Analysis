@@ -68,7 +68,7 @@ def final_report(chunked_report, style = "str"):
 
   if "csv" in style:
     d = [
-      ["Climate Parameter", "Historical Climate (1981-2010)*"]
+      ["Climate Parameter", "Historical Climate (1981-2010)*"],
       ["Freeze-Thaw Cycles: ", ""], 
       ["Extreme Temperatures: ", ""], 
       ["Heat Wave: ", ""], 

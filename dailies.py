@@ -12,12 +12,10 @@ from fetchdata import fetchECCC
 def downloadlist(siteID, yr1, yr2):
   # builds a list of file names to downbload from ECCC's daily climate data, using yr1,yr2 as an *inclusive* range of years to include
   prov = findprov(siteID)
-  t = []
   for yr in range(yr1, yr2+1):
     for i in range(12): #months
       fil = "climate_daily_" + prov + "_" + str(siteID) + "_" + str(yr) + "-" + str(i+1).zfill(2) + "_P1D.csv"
-      t.append(fil)
-  return t
+      yield fil
 
 #need to add an error message if there's any missing days
 
@@ -43,7 +41,11 @@ def collectalldailies(siteID, limit=-1, method = 1):
       #print(year, year in years)
       if siteID in href and href.endswith(".csv") and int(href[25:29]) in years: 
         print("fetching "+href)
-        d = fetchECCC(foldername + href)
+        try:
+          d = fetchECCC(foldername + href)
+        except requests.exceptions.HTTPError:
+          print("Could not fetch :" + href)
+          continue
         if header == []: header = d[0]
         data += d[1:]
     data.insert(0,header)      
@@ -53,8 +55,15 @@ def collectalldailies(siteID, limit=-1, method = 1):
   if method == 2:
     header = []
     data = []
+    errors = []
     for item in downloadlist(siteID, 1981, 2021):
-      d = fetchECCC(foldername + item)
+      print("fetching: " + item)
+      try:
+        d = fetchECCC(foldername + item)
+      except requests.exceptions.HTTPError as e:
+        print(e)
+        errors.append(e)
+        continue
       if header == []: header = d[0]
       data += d[1:]
     data.insert(0,header)      
