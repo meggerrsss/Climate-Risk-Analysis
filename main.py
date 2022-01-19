@@ -1,5 +1,5 @@
 import csv
-from meghan import climatetable
+from from_normals import climatetable
 import reports
 from siteIDdb import findprov
 from dailies import collectalldailies
@@ -60,5 +60,5 @@ if __name__ == "__main__":
 
   #main('2101300', True, False, False)
 
-  import daily_report
-  daily_report.heat_wave()
+  import from_dailies
+  from_dailies.diurnaldeviationD("temporarydailydata.csv")
