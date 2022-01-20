@@ -61,4 +61,4 @@ if __name__ == "__main__":
   #main('2101300', True, False, False)
 
   import from_dailies
-  from_dailies.diurnaldeviationD("temporarydailydata.csv")
+  from_dailies.strongwinddaysD("temporarydailydata.csv")

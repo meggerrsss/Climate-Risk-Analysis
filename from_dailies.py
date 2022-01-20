@@ -97,6 +97,94 @@ def diurnaldeviationD(data):
   return peryear
 
 
+def annualprecipitationD(data):
+  df = pd.read_csv(data)
+  daycount = len(df)
+  df = df[["Total Precip (mm)"]]
+  total = df.sum().values[0]
+  peryear = float(total)/daycount * 365
+  print(total, daycount, peryear)
+  print(df)
+  return peryear
+
+
+def seasonalpretipD(data):
+  df = pd.read_csv(data)
+  daycount = len(df)
+  df = df[["Month", "Total Precip (mm)"]]
+  spring = df[(df['Month'] >= 3) & (df['Month'] <= 5)]
+  summer = df[(df['Month'] >= 6) & (df['Month'] <= 8)]
+  autumn = df[(df['Month'] >= 9) & (df['Month'] <= 11)]
+  winter = df[(df.Month == 12) | (df.Month <= 2 )]
+  print(spring)
+  #seasoncounts = [len(spring), len(summer), len(autumn), len(winter)]
+  seasontotals = [spring.sum().values[0], summer.sum().values[0], autumn.sum().values[0], winter.sum().values[0]]
+  peryeartotals = [i/float(daycount) for i in seasontotals]
+  print(peryeartotals)
+  return peryeartotals #spr, sum, aut, win
+
+
+def annualsnowdepthD(data):
+  df = pd.read_csv(data)
+  df = df[["Snow on Grnd (cm)"]]
+  df = df.mean().values[0]
+  print(df)
+  return df
+
+def averagewintersnowdepthD(data): #october to april
+  df = pd.read_csv(data)
+  df = df[["Month", "Snow on Grnd (cm)"]]
+  df = df[(df.Month >= 10) | (df.Month <= 4 )]
+  df = df.mean().values[0]
+  print(df)
+  return df
+
+def extremesnowfalldaysD(data):
+  df = pd.read_csv(data)
+  df = df[["Total Snow (cm)"]]
+  df = df[df["Total Snow (cm)"] > 25]
+  print(df)
+  print(len(df))
+  return len(df)
+
+def annualsnowfalltotalD(data):
+  df = pd.read_csv(data)
+  daycount = len(df)
+  df = df[["Total Snow (cm)"]]
+  total = df.sum().values[0]
+  peryear = float(total)/daycount * 365
+  print(total, daycount, peryear)
+  print(df)
+  return peryear
+
+
+def drydaysD(data):
+  df = pd.read_csv(data)
+  daycount = len(df)
+  df = df[["Total Precip (mm)"]]
+  df = df[df["Total Precip (mm)"] < 0.2]
+  count = len(df)
+  peryear = float(count)/daycount * 365
+  print(count, daycount, peryear)
+  return peryear
+  
+
+def strongwinddaysD(data):
+  df = pd.read_csv(data)
+  daycount = len(df)
+  df = df[["Spd of Max Gust (km/h)"]].dropna()
+  df = df[df["Spd of Max Gust (km/h)"].apply(lambda x: x.isnumeric())]
+  df["Spd of Max Gust (km/h)"] = pd.to_numeric(df["Spd of Max Gust (km/h)"])
+  df = df[df["Spd of Max Gust (km/h)"] >= 63]
+  print(df)
+  count = len(df)
+  peryear = float(count)/daycount * 365
+  print(count, daycount, peryear)
+  return peryear
+    
+
+
+
 #def template(data):
 ###  df = pd.read_csv(data)
 #  daycount = len(df)

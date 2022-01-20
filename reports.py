@@ -1,9 +1,18 @@
 import from_normals
 import csv
 
+
+
+
+
+
 def final_report(chunked_report, style = "str"):
   #print("Site ID: " + str(siteid))
-  
+
+  if "dict" in style:
+    d = {}
+    return d
+
   if "str" in style:
     print("Freeze-Thaw Cycles: N/A")
 
