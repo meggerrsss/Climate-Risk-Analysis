@@ -40,14 +40,14 @@ def main(siteid, scrapedailies = False, climatenormals = True, rplot = False):
     #data entirely from the climate normals summaries
     print("scraping from climate normals pages...")
     chunked_reader = climatetable(normalsreader)
-    reports.final_report(chunked_reader, style = "csv")
+    reports.final_report(chunked_reader, 'temporarydailydata.csv', style = "strdict")
 
 if __name__ == "__main__":
   # ARGUMENTS REMINDER 
   # siteid, scrapedailies = False, climatenormals = True, rplot = False
 
   # PEI can scrape data but not use the climate normals (yet)
-  #main('8300300', True, False, False)
+  main('8300300', True, True, False)
 
   #main('6016527', True, False, False)
 
@@ -59,6 +59,3 @@ if __name__ == "__main__":
   # change line 40 from str to csv for csv output demo
 
   #main('2101300', True, False, False)
-
-  import from_dailies
-  from_dailies.strongwinddaysD("temporarydailydata.csv")
