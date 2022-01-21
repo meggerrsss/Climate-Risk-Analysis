@@ -5,8 +5,9 @@ from siteIDdb import findprov
 from dailies import collectalldailies
 from fetchdata import fetchECCC
 from graphdaily import runplot
+import pandas as pd
 
-def main(siteid, scrapedailies = False, climatenormals = True, rplot = False):
+def main(siteid, scrapedailies = False, rplot = False):
   # importing from web https://dd.weather.gc.ca/climate/observations/
   #siteid = '6016527' #ottawa --- requesting list of datafiles is too slow to run
   #siteid = '8300060' #pei 
@@ -36,26 +37,26 @@ def main(siteid, scrapedailies = False, climatenormals = True, rplot = False):
     
 
 
-  if climatenormals:
-    #data entirely from the climate normals summaries
-    print("scraping from climate normals pages...")
-    chunked_reader = climatetable(normalsreader)
-    reports.final_report(chunked_reader, 'temporarydailydata.csv')
+  
+  #data entirely from the climate normals summaries
+  print("scraping from climate normals pages...")
+  normalsdata = climatetable(normalsreader)
+  dailiesdataframe = pd.read_csv('temporarydailydata.csv')
+  reports.final_report(normalsdata, dailiesdataframe)
 
 if __name__ == "__main__":
   # ARGUMENTS REMINDER 
-  # siteid, scrapedailies = False, climatenormals = True, rplot = False
+  # siteid, scrapedailies = False, rplot = False
 
-  # PEI can scrape data but not use the climate normals (yet)
-  main('8300300', False, True, False)
+  main('7016294', False, False)
 
-  #main('6016527', True, False, False)
+  #main('6016527', True, False)
 
   # if rerunning from data that already exists
-  #main('8300300', False, False, True)
+  #main('8300300', False, True)
 
   # OTT can use the climate normals but not scrape data (timeout error)
-  #main('6016527', False, True, False)
+  #main('6016527', False, False)
   # change line 40 from str to csv for csv output demo
 
-  #main('2101300', True, False, False)
+  #main('2101300', True, False)
