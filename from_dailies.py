@@ -27,8 +27,17 @@ def coldwaveD(data):
   daycount = len(df)
   df = df[["Min Temp (°C)"]].rolling(3).max()
   df = df[df["Min Temp (°C)"] <= -15]
+  eventdates = df.index.array
+  print(type(eventdates[0]))
+  consec = 0
+  for event in range(len(eventdates)-1):
+    if abs(eventdates[event]-eventdates[event+1]) == 1:
+      consec += 1
   count = len(df)
+  print("count = ", count, "; consecutive events =", consec)
   peryear = float(count)/daycount * 365
+  print("per year = ", peryear)
+  exit()
   return peryear
   #print(count, daycount, peryear)
 
