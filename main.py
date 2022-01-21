@@ -40,7 +40,7 @@ def main(siteid, scrapedailies = False, climatenormals = True, rplot = False):
     #data entirely from the climate normals summaries
     print("scraping from climate normals pages...")
     chunked_reader = climatetable(normalsreader)
-    reports.final_report(chunked_reader, 'temporarydailydata.csv', style = "strdict")
+    reports.final_report(chunked_reader, 'temporarydailydata.csv', style = "strdictcsv")
 
 if __name__ == "__main__":
   # ARGUMENTS REMINDER 
