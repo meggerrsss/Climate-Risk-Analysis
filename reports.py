@@ -3,7 +3,7 @@ import csv
 from collections import OrderedDict
 
 
-def final_report(chunked_report, dailydata, style = "str"):
+def final_report(chunked_report, dailydata, style = "str", sigs = 2):
   #print("Site ID: " + str(siteid))
 
   if "dict" in style:
@@ -71,13 +71,12 @@ def final_report(chunked_report, dailydata, style = "str"):
 
   if "str" in style:
     for item in d:
-      print(item, d[item])
+      print(item, d[item], round(d[item], sigs))
 
 
-  if "csv" in style:
-    with open("writtenreportoutput.csv", 'w') as f:
-      csvwriter = csv.writer(f)
-      for line in d:
-        csvwriter.writerow([line, d[line]])
-    print("file written)")
+  with open("writtenreportoutput.csv", 'w') as f:
+    csvwriter = csv.writer(f)
+    for line in d:
+      csvwriter.writerow([line, round(d[line], 2)])
+  print("file written)")
     
