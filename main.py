@@ -19,12 +19,12 @@ def main(siteid, scrapedailies = False, climatenormals = True, rplot = False):
   normalsreader = fetchECCC(normalsurl)
 
   #scrapedailies = True 
-  years = range(1981, 2011)
+  years = [1981, 2010]
   print("scrape daily data? ", scrapedailies)
   if scrapedailies:
     # build filename based off siteID
   # this section imports all daily data from ECCC at a specific site ID into a saved file, currently very slow for non-PEI siteIDs
-    dailydata = collectalldailies(siteid, method=2)
+    dailydata = collectalldailies(siteid, years = years, method=2)
     with open("temporarydailydata.csv", 'w') as f:
       csvwriter = csv.writer(f)
       for line in dailydata:

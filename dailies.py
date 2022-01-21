@@ -12,6 +12,7 @@ from fetchdata import fetchECCC
 def downloadlist(siteID, yr1, yr2):
   # builds a list of file names to downbload from ECCC's daily climate data, using yr1,yr2 as an *inclusive* range of years to include
   prov = findprov(siteID)
+  print(range(yr1, yr2))
   for yr in range(yr1, yr2+1):
     for i in range(12): #months
       fil = "climate_daily_" + prov + "_" + str(siteID) + "_" + str(yr) + "-" + str(i+1).zfill(2) + "_P1D.csv"
@@ -21,7 +22,7 @@ def downloadlist(siteID, yr1, yr2):
 
 
 
-def collectalldailies(siteID, limit=-1, method = 1):
+def collectalldailies(siteID, years = [1981, 2010], limit=-1, method = 1):
   foldername = "https://dd.weather.gc.ca/climate/observations/daily/csv/" + findprov(
     siteID) + "/"  # string of location of all the files
   filenameprefix = "https://dd.weather.gc.ca/climate/observations/daily/csv/" + findprov(siteID) + "/climate_daily_" + findprov(siteID) + "_" + str(siteID)  #only want files that start with this
@@ -56,7 +57,8 @@ def collectalldailies(siteID, limit=-1, method = 1):
     header = []
     data = []
     errors = []
-    for item in downloadlist(siteID, 1981, 2021):
+    print(years)
+    for item in downloadlist(siteID, years[0], years[1]):
       print("fetching: " + item)
       try:
         d = fetchECCC(foldername + item)

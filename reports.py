@@ -74,5 +74,5 @@ def final_report(chunked_report, dailydata, verbose = False, sigs = 2):
     csvwriter = csv.writer(f)
     for line in d:
       csvwriter.writerow([line, round(d[line], 2)])
-  print("file written)")
+  print("(file written)")
     
