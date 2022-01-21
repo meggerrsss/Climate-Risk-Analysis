@@ -47,7 +47,7 @@ if __name__ == "__main__":
   # siteid, scrapedailies = False, climatenormals = True, rplot = False
 
   # PEI can scrape data but not use the climate normals (yet)
-  main('8300300', True, True, False)
+  main('8300300', False, True, False)
 
   #main('6016527', True, False, False)
 

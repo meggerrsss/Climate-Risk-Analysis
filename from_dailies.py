@@ -18,7 +18,8 @@ def heatwaveD(data):
   df = df[df["Max Temp (°C)"] >= 30]
   count = len(df)
   peryear = float(count)/daycount * 365
-  print(count, daycount, peryear)
+  return peryear
+  #print(count, daycount, peryear)
 
 def coldwaveD(data):
   # counts the number of rolling 3 day windows in which temp is <-15. longer duration events counted multiple times
@@ -28,20 +29,21 @@ def coldwaveD(data):
   df = df[df["Min Temp (°C)"] <= -15]
   count = len(df)
   peryear = float(count)/daycount * 365
-  print(count, daycount, peryear)
+  return peryear
+  #print(count, daycount, peryear)
 
 # more info: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.index.html 
 
 def hightemperatureD(data):
   df = pd.read_csv(data)
   df = df[["Max Temp (°C)"]].mean().values[0]
-  print(df)
+  #print(df)
   return df
 
 def lowtemperatureD(data):
   df = pd.read_csv(data)
   df = df[["Min Temp (°C)"]].mean().values[0]
-  print(df)
+  #print(df)
   return df
 
 def veryhotdaysD(data):
@@ -50,7 +52,7 @@ def veryhotdaysD(data):
   df = df[df["Max Temp (°C)"] >= 30]
   count = len(df)
   peryear = float(count)/daycount * 365
-  print(count, daycount, peryear)
+  #print(count, daycount, peryear)
   return peryear
 
 
@@ -60,7 +62,7 @@ def verycolddaysD(data):
   df = df[df["Min Temp (°C)"] <= -30]
   count = len(df)
   peryear = float(count)/daycount * 365
-  print(count, daycount, peryear)
+  #print(count, daycount, peryear)
   return peryear
 
 
@@ -71,7 +73,7 @@ def coolingdegreedaysD(data):
   count = len(df) # number of days >= 18
   aboveval = df[["Mean Temp (°C)"]].sum().values[0] - 18*count #number of degrees >=18 summed across the full dataset
   peryear = float(aboveval)/daycount * 365  # dividing by (number of days with data/365)
-  print(aboveval, peryear)
+  #print(aboveval, peryear)
   return peryear
 
 def heatingdegreedaysD(data):
@@ -81,7 +83,7 @@ def heatingdegreedaysD(data):
   count = len(df) # number of days <= 18
   aboveval = 18*count - df[["Mean Temp (°C)"]].sum().values[0] #number of degrees <=18 summed across the full dataset
   peryear = float(aboveval)/daycount * 365  # dividing by (number of days with data/365)
-  print(aboveval, peryear)
+  #print(aboveval, peryear)
   return peryear
 
 
@@ -92,8 +94,7 @@ def diurnaldeviationD(data):
   df = df[["Max Temp (°C)", "Min Temp (°C)"]]
   count = len(df)
   peryear = float(count)/daycount * 365
-  print(count, daycount, peryear)
-  print(df)
+  #print(df)
   return peryear
 
 
@@ -104,7 +105,7 @@ def annualprecipitationD(data):
   total = df.sum().values[0]
   peryear = float(total)/daycount * 365
   print(total, daycount, peryear)
-  print(df)
+  #print(df)
   return peryear
 
 
@@ -116,11 +117,11 @@ def seasonalpretipD(data):
   summer = df[(df['Month'] >= 6) & (df['Month'] <= 8)]
   autumn = df[(df['Month'] >= 9) & (df['Month'] <= 11)]
   winter = df[(df.Month == 12) | (df.Month <= 2 )]
-  print(spring)
+  #print(spring)
   #seasoncounts = [len(spring), len(summer), len(autumn), len(winter)]
   seasontotals = [spring.sum().values[0], summer.sum().values[0], autumn.sum().values[0], winter.sum().values[0]]
   peryeartotals = [i/float(daycount) for i in seasontotals]
-  print(peryeartotals)
+  #print(peryeartotals)
   return peryeartotals #spr, sum, aut, win
 
 
@@ -128,7 +129,7 @@ def annualsnowdepthD(data):
   df = pd.read_csv(data)
   df = df[["Snow on Grnd (cm)"]]
   df = df.mean().values[0]
-  print(df)
+  #print(df)
   return df
 
 def averagewintersnowdepthD(data): #october to april
@@ -136,15 +137,15 @@ def averagewintersnowdepthD(data): #october to april
   df = df[["Month", "Snow on Grnd (cm)"]]
   df = df[(df.Month >= 10) | (df.Month <= 4 )]
   df = df.mean().values[0]
-  print(df)
+  #print(df)
   return df
 
 def extremesnowfalldaysD(data):
   df = pd.read_csv(data)
   df = df[["Total Snow (cm)"]]
   df = df[df["Total Snow (cm)"] > 25]
-  print(df)
-  print(len(df))
+  #print(df)
+  #print(len(df))
   return len(df)
 
 def annualsnowfalltotalD(data):
@@ -153,8 +154,8 @@ def annualsnowfalltotalD(data):
   df = df[["Total Snow (cm)"]]
   total = df.sum().values[0]
   peryear = float(total)/daycount * 365
-  print(total, daycount, peryear)
-  print(df)
+  #print(total, daycount, peryear)
+  #print(df)
   return peryear
 
 
@@ -165,7 +166,7 @@ def drydaysD(data):
   df = df[df["Total Precip (mm)"] < 0.2]
   count = len(df)
   peryear = float(count)/daycount * 365
-  print(count, daycount, peryear)
+  #print(count, daycount, peryear)
   return peryear
   
 
@@ -176,10 +177,10 @@ def strongwinddaysD(data):
   df = df[df["Spd of Max Gust (km/h)"].apply(lambda x: x.isnumeric())]
   df["Spd of Max Gust (km/h)"] = pd.to_numeric(df["Spd of Max Gust (km/h)"])
   df = df[df["Spd of Max Gust (km/h)"] >= 63]
-  print(df)
+  #print(df)
   count = len(df)
   peryear = float(count)/daycount * 365
-  print(count, daycount, peryear)
+  #print(count, daycount, peryear)
   return peryear
     
 

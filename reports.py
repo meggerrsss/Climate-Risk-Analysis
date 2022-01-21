@@ -1,12 +1,13 @@
 import from_normals, from_dailies
 import csv
+from collections import OrderedDict
 
 
 def final_report(chunked_report, dailydata, style = "str"):
   #print("Site ID: " + str(siteid))
 
   if "dict" in style:
-    d = {}
+    d = OrderedDict()
     d['Heat Wave'] = from_dailies.heatwaveD(dailydata)
     d['Cold Wave'] = from_dailies.coldwaveD(dailydata)
     d['Freeze-Thaw Temperatures'] = from_dailies.freezethawD(dailydata)
@@ -66,11 +67,11 @@ def final_report(chunked_report, dailydata, style = "str"):
 
 
 
-    return d
+    print(d)
 
   if "str" in style:
-    for item in d.items():
-      print(item + str(d[item]))
+    for item in d:
+      print(item, d[item])
     #print("Freeze-Thaw Cycles: N/A")
 
     #print("Extreme Temperatures: ")
@@ -96,40 +97,40 @@ def final_report(chunked_report, dailydata, style = "str"):
     #print("- Extreme Snowfall Totals: %.1f" % from_normals.extremesnowfalldays(chunked_report))
     #print("- Annual Snowfall Total: %.1f" % from_normals.annualsnowfalltotal(chunked_report))
 
-    print("Design Event Precipitation")
-    print("- 1:5 yr/24 h: ")
-    print("- 1:50 yr/15 min: ")
-    print("- 1:50 yr/24 h: ")
-    print("- 1:100 yr/24 h: ")
+    #print("Design Event Precipitation")
+    #print("- 1:5 yr/24 h: ")
+    #print("- 1:50 yr/15 min: ")
+    #print("- 1:50 yr/24 h: ")
+    #print("- 1:100 yr/24 h: ")
 
-    print("Freezing Rain")
-    print("- Annual Freezing Precipitation Hours: ")
-    print("- Annual Freezing Rain Hours: ")
+    #print("Freezing Rain")
+    #print("- Annual Freezing Precipitation Hours: ")
+    #print("- Annual Freezing Rain Hours: ")
 
-    print("Wildfire")
-    print("- Climate Moisture Index: ")
-    print("- Dry Days: %.1f" % from_normals.drydays(chunked_report))
-    print("- Annual SPEI Values: ")
-    print("- Wildfire Events/Yr: ")
+    #print("Wildfire")
+    #print("- Climate Moisture Index: ")
+    #print("- Dry Days: %.1f" % from_normals.drydays(chunked_report))
+    #print("- Annual SPEI Values: ")
+    #print("- Wildfire Events/Yr: ")
 
-    print("- Strong Winds: %.1f" % from_normals.strongwinddays(chunked_report))
+    #print("- Strong Winds: %.1f" % from_normals.strongwinddays(chunked_report))
 
-    print("Thunderstorms, lightning, tornadoes, hail")
-    print("Hail Frequency/severity: ")
-    print("Tornado Frequency/severity: ")
-    print("Thunderstorm Frequency/severity")
+    #print("Thunderstorms, lightning, tornadoes, hail")
+    #print("Hail Frequency/severity: ")
+    #print("Tornado Frequency/severity: ")
+    #print("Thunderstorm Frequency/severity")
 
-    print("hurricanes and Tropical Storms")
+    #print("hurricanes and Tropical Storms")
 
-    print("Flooding")
+    #print("Flooding")
 
-    print("Riparian erosion")
+    #print("Riparian erosion")
 
-    print("Sea Level Rise")
+    #print("Sea Level Rise")
 
-    print("Coastal erosion")
+    #print("Coastal erosion")
 
-    print("Heavy Fog")
+    #print("Heavy Fog")
 
 
   if "csv" in style:
