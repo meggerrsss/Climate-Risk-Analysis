@@ -1,7 +1,7 @@
 import pandas as pd
 
 def freezethawD(df):
-  # Days where the maximum daily temperature > 0°C and the minimum daily temperature < 0°C. Number of occurrences per year.
+  # Days where the maximum daily temperature > 0°C and the minimum daily temperature < 1°C. Number of occurrences per year.
   daycount = len(df)
   df = df[["Max Temp (°C)", "Min Temp (°C)"]].dropna()
   df["Max Temp (°C)"] = pd.to_numeric(df["Max Temp (°C)"])
@@ -12,8 +12,8 @@ def freezethawD(df):
   df = df[df["Max Temp (°C)"] > 0]
   print(df)
   df = df[df["Min Temp (°C)"] < -1]
+  #df = df[(df["Max Temp (°C)" > 0]) & (df["Min Temp (°C)" < 0])]
   print(df)
-  #df = df[df["Max Temp (°C)"] * df["Min Temp (°C)"] < 0] it wasn't this option lol
   count = len(df)
   peryear = float(count)/cleaneddaycount * 365
   print(count, peryear)

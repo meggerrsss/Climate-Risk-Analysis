@@ -60,3 +60,14 @@ if __name__ == "__main__":
   # change line 40 from str to csv for csv output demo
 
   #main('2101300', True, False)
+
+
+
+#notes about what to do add to config file
+# site id
+# toggle for each parameter 
+# "error threshold" for missing data >x% (10 is default)
+# verbose mode?
+# year range
+
+
