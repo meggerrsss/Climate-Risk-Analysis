@@ -22,13 +22,13 @@ def downloadlist(siteID, yr1, yr2):
 
 
 
-def collectalldailies(siteID, years = [1981, 2010], limit=-1, method = 1):
+def collectalldailies(siteID, years = [1981, 2010], limit=-1, method = 1, verbose = False):
   foldername = "https://dd.weather.gc.ca/climate/observations/daily/csv/" + findprov(
     siteID) + "/"  # string of location of all the files
   filenameprefix = "https://dd.weather.gc.ca/climate/observations/daily/csv/" + findprov(siteID) + "/climate_daily_" + findprov(siteID) + "_" + str(siteID)  #only want files that start with this
 
   if method == 1: 
-    # opening the folder to list out the files
+    # opening the folder to list out the files, slow
     folder = requests.get(foldername, timeout=360)
     soup = BeautifulSoup(folder.text, 'html.parser')
   
@@ -45,7 +45,7 @@ def collectalldailies(siteID, years = [1981, 2010], limit=-1, method = 1):
         try:
           d = fetchECCC(foldername + href)
         except requests.exceptions.HTTPError:
-          print("Could not fetch :" + href)
+          if verbose: print("Could not fetch :" + href)
           continue
         if header == []: header = d[0]
         data += d[1:]
@@ -59,18 +59,18 @@ def collectalldailies(siteID, years = [1981, 2010], limit=-1, method = 1):
     errors = []
     print(years)
     for item in downloadlist(siteID, years[0], years[1]):
-      print("fetching: " + item)
+      if verbose: print("fetching: " + item)
       try:
         d = fetchECCC(foldername + item)
       except requests.exceptions.HTTPError as e:
-        print(e)
+        if verbose: print(e)
         errors.append(e)
         continue
       if header == []: header = d[0]
       data += d[1:]
     data.insert(0,header)      
     return data
-  print("finished collecting")
+  if verbose: print("finished collecting")
 
   #dailydata = pd.read_csv(siteIDurl)
   #return sites

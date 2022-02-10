@@ -66,7 +66,7 @@ def veryhotdaysD(df):
   df = df[df["Max Temp (°C)"] > 30].dropna()
   count = len(df)
   peryear = float(count)/daycount * 365
-  #print(count, daycount, peryear)
+  if verbose: print(count, daycount, peryear)
   return peryear
 
 
@@ -75,7 +75,7 @@ def verycolddaysD(df):
   df = df[df["Min Temp (°C)"] < -30].dropna()
   count = len(df)
   peryear = float(count)/daycount * 365
-  #print(count, daycount, peryear)
+  if verbose: print(count, daycount, peryear)
   return peryear
 
 
@@ -85,7 +85,7 @@ def coolingdegreedaysD(df):
   count = len(df) # number of days >= 18
   aboveval = df[["Mean Temp (°C)"]].sum().values[0] - 18*count #number of degrees >=18 summed across the full dataset
   peryear = float(aboveval)/daycount * 365  # dividing by (number of days with data/365)
-  #print(aboveval, peryear)
+  if verbose: print(aboveval, peryear)
   return peryear
 
 def heatingdegreedaysD(df):
@@ -94,7 +94,7 @@ def heatingdegreedaysD(df):
   count = len(df) # number of days <= 18
   aboveval = 18*count - df[["Mean Temp (°C)"]].sum().values[0] #number of degrees <=18 summed across the full dataset
   peryear = float(aboveval)/daycount * 365  # dividing by (number of days with data/365)
-  #print(aboveval, peryear)
+  if verbose: print(aboveval, peryear)
   return peryear
 
 
