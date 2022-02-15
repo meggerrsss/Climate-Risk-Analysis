@@ -22,7 +22,7 @@ def downloadlist(siteID, yr1, yr2):
 
 
 
-def collectalldailies(siteID, years = [1981, 2010], limit=-1, method = 1, verbose = False):
+def collectalldailies(siteID, years = [1981, 2010], limit=-1, method = 2, verbose = True):
   foldername = "https://dd.weather.gc.ca/climate/observations/daily/csv/" + findprov(
     siteID) + "/"  # string of location of all the files
   filenameprefix = "https://dd.weather.gc.ca/climate/observations/daily/csv/" + findprov(siteID) + "/climate_daily_" + findprov(siteID) + "_" + str(siteID)  #only want files that start with this
@@ -36,20 +36,26 @@ def collectalldailies(siteID, years = [1981, 2010], limit=-1, method = 1, verbos
     years = range(1981, 2011) #unclear if assigning it here vs main makes more sense
     header = []
     data = []
+    errors = []
     for link in soup.find_all('a'):
       href = link.get("href")
       #if len(href)>30 and href.endswith(".csv"): year = int(href[25:29])
       #print(year, year in years)
       if siteID in href and href.endswith(".csv") and int(href[25:29]) in years: 
-        print("fetching "+href)
+        if verbose: print("fetching "+href)
         try:
           d = fetchECCC(foldername + href)
         except requests.exceptions.HTTPError:
-          if verbose: print("Could not fetch :" + href)
+          t = "Could not fetch :" + href
+          if verbose: print(t)
+          errors.append(t)
           continue
         if header == []: header = d[0]
         data += d[1:]
-    data.insert(0,header)      
+    data.insert(0,header)   
+    with open('errorreport.txt', 'a') as f:
+      for err in errors:
+        f.write(str(err)+'\n')    
     return data
 
 
@@ -68,8 +74,13 @@ def collectalldailies(siteID, years = [1981, 2010], limit=-1, method = 1, verbos
         continue
       if header == []: header = d[0]
       data += d[1:]
-    data.insert(0,header)      
+    data.insert(0,header)  
+    with open('errorreport.txt', 'a') as f:
+      for err in errors:
+        f.write(str(err)+'\n')    
     return data
+  
+  
   if verbose: print("finished collecting")
 
   #dailydata = pd.read_csv(siteIDurl)

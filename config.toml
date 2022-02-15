@@ -1,0 +1,26 @@
+# Environment Canada's database site ID
+siteid = "7016294"
+#siteid = '6016527' #ottawa 
+#siteid = '8300060' #pei
+
+# download fresh daily data of this siteID 
+scrapedailies = false
+
+# 1: pull province's list of files, search for matches to siteID
+# 2: generate list of paths using siteID (faster, recommended)
+scrapemethod = 2
+
+# for scrapemethod 1, amount of time the get is allowed to run for
+timeout = 360
+
+# Temperature plot of all daily data
+rplot = false
+
+# range of years to consider for calculations (inclusive)
+years = "[1981, 2010]"
+
+# print messages
+verbose = true
+
+# amount of missing data across year range in % that will cause an error
+errorthreshold = 10

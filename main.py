@@ -6,22 +6,35 @@ from dailies import collectalldailies
 from fetchdata import fetchECCC
 from graphdaily import runplot
 import pandas as pd
+import tomli
 
 def main(siteid, scrapedailies = False, rplot = False):
-  # importing from web https://dd.weather.gc.ca/climate/observations/
-  #siteid = '6016527' #ottawa --- requesting list of datafiles is too slow to run
-  #siteid = '8300060' #pei 
+  # importing from web https://dd.weather.gc.ca/climate/observations/ 
+
+  # importing from config file, call arguments like 
+  with open("config.toml", "rb") as f:
+    config = tomli.load(f)
+
+  print(config)
+  print(config['verbose'])
+  # converting each line in config.toml to its own variable name
+  for sett in config.keys():
+    #exec("{0} = {1}".format(sett,config[sett]))
+    globals()[sett] = config[sett] 
+  
+  print(verbose)
+  quit()
+  print(config)
     
-  print("siteid: ", siteid)
+  if verbose: print("siteid: ", siteid)
   province = findprov(siteid)
   print("province: ", province)
   normalsurl = "https://dd.weather.gc.ca/climate/observations/normals/csv/1981-2010/" + province + "/climate_normals_" + province + "_" + siteid + "_1981-2010.csv"
 
   normalsreader = fetchECCC(normalsurl)
 
-  #scrapedailies = True 
   years = [1981, 2010]
-  print("scrape daily data? ", scrapedailies)
+  if verbose: print("scrape daily data? ", scrapedailies)
   if scrapedailies:
     # build filename based off siteID
   # this section imports all daily data from ECCC at a specific site ID into a saved file, currently very slow for non-PEI siteIDs
@@ -32,7 +45,7 @@ def main(siteid, scrapedailies = False, rplot = False):
         csvwriter.writerow(line)
     print("file written")
   if rplot: 
-    if not scrapedailies: print("plotting without downloading fresh...")
+    if verbose and not scrapedailies: print("plotting without downloading fresh...")
     runplot()
     
 
@@ -48,7 +61,8 @@ if __name__ == "__main__":
   # ARGUMENTS REMINDER 
   # siteid, scrapedailies = False, rplot = False
 
-  main('7016294', False, False)
+  #main('7016294', True, False)
+  main('23026HN', True, False)
 
   #main('6016527', True, False)
 
