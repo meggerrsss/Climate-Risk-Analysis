@@ -6,6 +6,7 @@ from siteIDdb import findprov
 import requests
 from bs4 import BeautifulSoup
 from fetchdata import fetchECCC
+from openconfig import openconfig
 
 
 def downloadlist(yr1, yr2):
@@ -20,26 +21,24 @@ def downloadlist(yr1, yr2):
 
 
 
-def collectalldailies(years = [1981, 2010], limit=-1, method = 2, verbose = True):
+def collectalldailies(siteid, years = [1981, 2010], limit=-1):
+  openconfig()
   foldername = "https://dd.weather.gc.ca/climate/observations/daily/csv/" + findprov(
     siteid) + "/"  # string of location of all the files
   filenameprefix = "https://dd.weather.gc.ca/climate/observations/daily/csv/" + findprov(siteid) + "/climate_daily_" + findprov(siteid) + "_" + str(siteid)  #only want files that start with this
 
-  if method == 1: 
+  if scrapemethod == 1: 
     # opening the folder to list out the files, slow
     folder = requests.get(foldername, timeout=360)
     soup = BeautifulSoup(folder.text, 'html.parser')
   
-    #fetching the data into a csv-ish list, which writes to file later (currently in main)
-    years = range(1981, 2011) #unclear if assigning it here vs main makes more sense
+    #fetching the data into a csv-ish list, which writes to file later (later as in, in main)
     header = []
     data = []
     errors = []
     for link in soup.find_all('a'):
       href = link.get("href")
-      #if len(href)>30 and href.endswith(".csv"): year = int(href[25:29])
-      #print(year, year in years)
-      if siteID in href and href.endswith(".csv") and int(href[25:29]) in years: 
+      if siteid in href and href.endswith(".csv") and int(href[25:29]) in years: 
         if verbose: print("fetching "+href)
         try:
           d = fetchECCC(foldername + href)
@@ -57,12 +56,12 @@ def collectalldailies(years = [1981, 2010], limit=-1, method = 2, verbose = True
     return data
 
 
-  if method == 2:
+  if scrapemethod == 2:
+    # using the year range and siteid, create full paths from scratch and only get those, recommended, fast
     header = []
     data = []
     errors = []
-    print(years)
-    for item in downloadlist(siteID, years[0], years[1]):
+    for item in downloadlist(years[0], years[1]):
       if verbose: print("fetching: " + item)
       try:
         d = fetchECCC(foldername + item)

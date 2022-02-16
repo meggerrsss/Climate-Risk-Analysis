@@ -38,7 +38,7 @@ def main():
     yearrange = [int(x) for x in years[1:-1].split(", ")] # converting to integers
     # build filename based off siteID
     # this section imports all daily data from ECCC at a specific site ID into a saved file
-    dailydata = collectalldailies(years = yearrange)
+    dailydata = collectalldailies(siteid, years = yearrange)
     with open("temporarydailydata.csv", 'w') as f:
       csvwriter = csv.writer(f)
       for line in dailydata:
