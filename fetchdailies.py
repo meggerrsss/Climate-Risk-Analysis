@@ -2,17 +2,15 @@
 # site = https://dd.weather.gc.ca/climate/observations/daily/csv/ON/
 # specific url example = https://dd.weather.gc.ca/climate/observations/daily/csv/ON/climate_daily_ON_6041109_1944-03_P1D.csv
 
-import pandas as pd
 from siteIDdb import findprov
 import requests
 from bs4 import BeautifulSoup
 from fetchdata import fetchECCC
 
 
-def downloadlist(siteID, yr1, yr2):
+def downloadlist(yr1, yr2):
   # builds a list of file names to downbload from ECCC's daily climate data, using yr1,yr2 as an *inclusive* range of years to include
-  prov = findprov(siteID)
-  print(range(yr1, yr2))
+  prov = findprov(siteid)
   for yr in range(yr1, yr2+1):
     for i in range(12): #months
       fil = "climate_daily_" + prov + "_" + str(siteID) + "_" + str(yr) + "-" + str(i+1).zfill(2) + "_P1D.csv"
@@ -22,10 +20,10 @@ def downloadlist(siteID, yr1, yr2):
 
 
 
-def collectalldailies(siteID, years = [1981, 2010], limit=-1, method = 2, verbose = True):
+def collectalldailies(years = [1981, 2010], limit=-1, method = 2, verbose = True):
   foldername = "https://dd.weather.gc.ca/climate/observations/daily/csv/" + findprov(
-    siteID) + "/"  # string of location of all the files
-  filenameprefix = "https://dd.weather.gc.ca/climate/observations/daily/csv/" + findprov(siteID) + "/climate_daily_" + findprov(siteID) + "_" + str(siteID)  #only want files that start with this
+    siteid) + "/"  # string of location of all the files
+  filenameprefix = "https://dd.weather.gc.ca/climate/observations/daily/csv/" + findprov(siteid) + "/climate_daily_" + findprov(siteid) + "_" + str(siteid)  #only want files that start with this
 
   if method == 1: 
     # opening the folder to list out the files, slow

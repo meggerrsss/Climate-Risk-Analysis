@@ -1,14 +1,15 @@
-import requests, csv 
 import pandas as pd
 
 siteIDurl = 'https://dd.weather.gc.ca/climate/observations/climate_station_list.csv'
 
 def fetch(urlname):
-  sites = pd.read_csv(siteIDurl)
+  # downloads EC's list of siteIDs
+  sites = pd.read_csv(urlname)
   return sites 
-    
 
+  
 def shortenprovince(prov):
+  # converts full province name to abbreviations
   if prov == "ALBERTA": return "AB"
   elif prov == "BRITISH COLUMBIA": return "BC"
   elif prov == "NEWFOUNDLAND": return "NL"
@@ -26,6 +27,7 @@ def shortenprovince(prov):
 
 
 def findprov(siteID):
+  # reads through database to find site ID's province, then shortens to abbv.
   db = fetch(siteIDurl)
   db['Climate ID'] = db['Climate ID'].map(str) #ensuring entire climate ID colum is a str
   spot = db.loc[db['Climate ID'] == siteID]
