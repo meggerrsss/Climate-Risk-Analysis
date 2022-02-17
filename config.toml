@@ -29,6 +29,54 @@ verbose = true
 rplot = false
 sigs = 2
 
-[report]
+[report] # toggle is true or false (case sensitive)
+heatwave.run = true
+heatwave.name = "Heat Wave"
+coldwave.run = true
+coldwave.name = "Cold Wave"
+freezethaw.run = true
+freezethaw.name = "Freeze-Thaw Temperatures"
+diurnaldeviation.run = true
+diurnaldeviation.name = "Diurnal Temperature Deviation"
 hightemperature.run = true
 hightemperature.name = "High Temperature"
+lowtemperature.run = true
+lowtemperature.name = "Low Temperatures"
+veryhotdays.run = true
+veryhotdays.name = "Very Hot Days"
+verycolddays.run = true
+verycolddays.name = "Very Cold Days"
+coolingdegreedays.run = true
+coolingdegreedays.name = "Cooling Degree Days"
+heatingdegreedays.run = true
+heatingdegreedays.name = "Heating Degree Days"
+annualprecipitation.run = true
+annualprecipitation.name = "Annual Precipitation"
+springprecipitation.run = true
+springprecipitation.name = "Spring Precipitation"
+summerprecipitation.run = true
+summerprecipitation.name = "Summer Precipitation"
+fallprecipitation.run = true
+fallprecipitation.name = "Autumn Precipitation"
+winterprecipitation.run = true
+winterprecipitation.name = "Winter Precipitation"
+annualsnowfalltotal.run = true
+annualsnowfalltotal.name = "Annual Snowfall"
+annualsnowdepth.run = true
+annualsnowdepth.name = "Annual Average Snow Depth"
+averagewintersnowdepth.run = true
+averagewintersnowdepth.name = "Winter Average Snow Depth"
+extremesnowfalldays.run = true
+extremesnowfalldays.name = "Extreme Snowfall Days"
+drydays.run = true
+drydays.name = "Dry Days"
+strongwinddays.run = true
+strongwinddays.name = "Strong Wind Days"
+# GENERALIZABILITY NOTE
+# before adding a new parameter to the bottom of config here, there must be a calculation in from_dailies.py whose name ends with "D" (ie, drydays vs drydaysD). 
+# from_normals is optional and does not need to end in D
+# the function name must match the lines in this table above 
+# so in from_normals.py: function() and in from_dailies.py: functionD()
+# then add:
+# function.run = true/false
+# function.name = "name that appears in the report output"
