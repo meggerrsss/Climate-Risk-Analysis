@@ -6,7 +6,6 @@ from siteIDdb import findprov
 import requests
 from bs4 import BeautifulSoup
 from fetchdata import fetchECCC
-from openconfig import openconfig
     
 
 def downloadlist(config):
