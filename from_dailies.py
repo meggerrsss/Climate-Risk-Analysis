@@ -119,56 +119,30 @@ def annualprecipitationD(df): # * needs cleaning check
 
 
 # commented out to help with the generalization in reports/config
-#def springprecipitationD(df): # * needs cleaning check
-#  daycount = len(df)
-#  df = df[["Month", "Total Precip (mm)"]].dropna()
-#  spring = df[(df['Month'] >= 3) & (df['Month'] <= 5)]
-#  summer = df[(df['Month'] >= 6) & (df['Month'] <= 8)]
-#  autumn = df[(df['Month'] >= 9) & (df['Month'] <= 11)]
-#  winter = df[(df.Month == 12) | (df.Month <= 2 )]
-#  #print(spring)
-#  #seasoncounts = [len(spring), len(summer), len(autumn), len(winter)]
-#  seasontotals = [spring.sum().values[0], summer.sum().values[0], autumn.sum().values[0], winter.sum().values[0]]
-#  peryeartotals = [i/float(daycount) for i in seasontotals]
-#  #print(peryeartotals)
-#  return peryeartotals #spr, sum, aut, win
-
-
-
-def springprecipitationD(df): # * needs cleaning check
+def seasonalprecipitationD(df): # * needs cleaning check
   daycount = len(df)
   df = df[["Month", "Total Precip (mm)"]].dropna()
   spring = df[(df['Month'] >= 3) & (df['Month'] <= 5)]
-  seasontotals = spring.sum().values[0]
-  peryeartotals = seasontotals/float(daycount)
-  return peryeartotals 
-
-
-def summerprecipitationD(df): # * needs cleaning check
-  daycount = len(df)
-  df = df[["Month", "Total Precip (mm)"]].dropna()
   summer = df[(df['Month'] >= 6) & (df['Month'] <= 8)]
-  seasontotals = summer.sum().values[0]
-  peryeartotals = seasontotals/float(daycount)
-  return peryeartotals 
-
-
-def fallprecipitationD(df): # * needs cleaning check
-  daycount = len(df)
-  df = df[["Month", "Total Precip (mm)"]].dropna()
   autumn = df[(df['Month'] >= 9) & (df['Month'] <= 11)]
-  seasontotals = autumn.sum().values[0]
-  peryeartotals = seasontotals/float(daycount)
-  return peryeartotals 
-
-
-def winterprecipitationD(df): # * needs cleaning check
-  daycount = len(df)
-  df = df[["Month", "Total Precip (mm)"]].dropna()
   winter = df[(df.Month == 12) | (df.Month <= 2 )]
-  seasontotals = winter.sum().values[0]
-  peryeartotals = seasontotals/float(daycount)
-  return peryeartotals 
+  #print(spring)
+  #seasoncounts = [len(spring), len(summer), len(autumn), len(winter)]
+  seasontotals = [spring.sum().values[0], summer.sum().values[0], autumn.sum().values[0], winter.sum().values[0]]
+  peryeartotals = [i/float(daycount) for i in seasontotals]
+  #print(peryeartotals)
+  return peryeartotals #spr, sum, aut, win
+
+
+# wrappers to make my life eaiser with the function vs functionD requirement 
+def springprecipitationD(df): 
+  return seasonalprecipitationD(df)[0] 
+def summerprecipitationD(df): 
+  return seasonalprecipitationD(df)[1] 
+def fallprecipitationD(df): 
+  return seasonalprecipitationD(df)[2] 
+def winterprecipitationD(df): 
+  return seasonalprecipitationD(df)[3] 
 
 
 def annualsnowdepthD(df):
