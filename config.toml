@@ -6,7 +6,10 @@ siteid = "6016527"
 
 # download fresh daily data of this siteID 
 scrapedailies = false
-scrapenormals = true
+scrapenormals = true #needs to be true right now 
+
+# forces a recalculation from the downloaded daily data instead of the climate normals reports
+forcedailies = false
 
 # 1: pull province's list of files, search for matches to siteID
 # 2: generate list of paths using siteID (faster, recommended)
@@ -27,7 +30,10 @@ verbose = true
 
 # Temperature plot of all daily data
 rplot = false
+
+# number of sig digits used in report's second value column
 sigs = 2
+
 
 [report] # toggle is true or false (case sensitive)
 heatwave.run = true

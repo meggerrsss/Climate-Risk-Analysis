@@ -21,8 +21,11 @@ def final_report(chunked_report, dailydata, verbose = True, sigs = 2, config = N
       try: normal = getattr(from_normals, k)
       except: pass  ############create error here
       daily = getattr(from_dailies, k +"D")
-      try: d[name] = normal(chunked_report)
-      except: d[name] = daily(dailydata)
+      if config['forcedailies']:
+        d[name] = daily(dailydata)
+      else:
+        try: d[name] = normal(chunked_report)
+        except: d[name] = daily(dailydata)
         
   
   #try: d['High Temperatures'] = from_normals.hightemperature(chunked_report)

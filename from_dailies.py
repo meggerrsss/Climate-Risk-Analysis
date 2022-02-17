@@ -19,7 +19,7 @@ def freezethawD(df):
   peryear = float(count)/cleaneddaycount * 365
   return peryear
 
-def heatwaveD(df):
+def heatwaveD(df): # * needs cleaning check
   # counts the number of rolling 3 day windows in which temp is >= 30. longer duration events counted multiple times
   daycount = len(df)
   df = df[["Max Temp (°C)"]].dropna().rolling(3).min()
@@ -34,7 +34,7 @@ def heatwaveD(df):
   peryear = float(discrete)/daycount * 365
   return peryear
 
-def coldwaveD(df):
+def coldwaveD(df): # * needs cleaning check
   # counts the number of rolling 3 day windows in which temp is <-15. longer duration events counted multiple times
   daycount = len(df)
   df = df[["Min Temp (°C)"]].dropna().rolling(3).max()
@@ -51,7 +51,7 @@ def coldwaveD(df):
 
 # more info: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.index.html 
 
-def hightemperatureD(df):
+def hightemperatureD(df): 
   df = df[["Max Temp (°C)"]].dropna().mean().values[0]
   #print(df)
   return df
@@ -61,7 +61,7 @@ def lowtemperatureD(df):
   #print(df)
   return df
 
-def veryhotdaysD(df):
+def veryhotdaysD(df): # * needs cleaning check
   daycount = len(df)
   df = df[df["Max Temp (°C)"] > 30].dropna()
   count = len(df)
@@ -70,7 +70,7 @@ def veryhotdaysD(df):
   return peryear
 
 
-def verycolddaysD(df):
+def verycolddaysD(df): # * needs cleaning check
   daycount = len(df)
   df = df[df["Min Temp (°C)"] < -30].dropna()
   count = len(df)
@@ -79,7 +79,7 @@ def verycolddaysD(df):
   return peryear
 
 
-def coolingdegreedaysD(df):
+def coolingdegreedaysD(df): # * needs cleaning check
   daycount = len(df)
   df = df[df["Mean Temp (°C)"] > 18].dropna()
   count = len(df) # number of days >= 18
@@ -88,7 +88,7 @@ def coolingdegreedaysD(df):
   if verbose: print(aboveval, peryear)
   return peryear
 
-def heatingdegreedaysD(df):
+def heatingdegreedaysD(df):  # * needs cleaning check
   daycount = len(df)
   df = df[df["Mean Temp (°C)"] < 18].dropna()
   count = len(df) # number of days <= 18
@@ -98,7 +98,7 @@ def heatingdegreedaysD(df):
   return peryear
 
 
-def diurnaldeviationD(df):
+def diurnaldeviationD(df): # * needs cleaning check
   daycount = len(df)
   df = df[df["Max Temp (°C)"] - df["Min Temp (°C)"] > 25].dropna() 
   df = df[["Max Temp (°C)", "Min Temp (°C)"]]
@@ -108,7 +108,7 @@ def diurnaldeviationD(df):
   return peryear
 
 
-def annualprecipitationD(df):
+def annualprecipitationD(df): # * needs cleaning check
   daycount = len(df)
   df = df[["Total Precip (mm)"]].dropna()
   total = df.sum().values[0]
@@ -119,7 +119,7 @@ def annualprecipitationD(df):
 
 
 # commented out to help with the generalization in reports/config
-#def springprecipitationD(df):
+#def springprecipitationD(df): # * needs cleaning check
 #  daycount = len(df)
 #  df = df[["Month", "Total Precip (mm)"]].dropna()
 #  spring = df[(df['Month'] >= 3) & (df['Month'] <= 5)]
@@ -135,7 +135,7 @@ def annualprecipitationD(df):
 
 
 
-def springprecipitationD(df):
+def springprecipitationD(df): # * needs cleaning check
   daycount = len(df)
   df = df[["Month", "Total Precip (mm)"]].dropna()
   spring = df[(df['Month'] >= 3) & (df['Month'] <= 5)]
@@ -144,7 +144,7 @@ def springprecipitationD(df):
   return peryeartotals 
 
 
-def summerprecipitationD(df):
+def summerprecipitationD(df): # * needs cleaning check
   daycount = len(df)
   df = df[["Month", "Total Precip (mm)"]].dropna()
   summer = df[(df['Month'] >= 6) & (df['Month'] <= 8)]
@@ -153,7 +153,7 @@ def summerprecipitationD(df):
   return peryeartotals 
 
 
-def fallprecipitationD(df):
+def fallprecipitationD(df): # * needs cleaning check
   daycount = len(df)
   df = df[["Month", "Total Precip (mm)"]].dropna()
   autumn = df[(df['Month'] >= 9) & (df['Month'] <= 11)]
@@ -162,7 +162,7 @@ def fallprecipitationD(df):
   return peryeartotals 
 
 
-def winterprecipitationD(df):
+def winterprecipitationD(df): # * needs cleaning check
   daycount = len(df)
   df = df[["Month", "Total Precip (mm)"]].dropna()
   winter = df[(df.Month == 12) | (df.Month <= 2 )]
@@ -177,7 +177,7 @@ def annualsnowdepthD(df):
   #print(df)
   return df
 
-def averagewintersnowdepthD(df): #october to april
+def averagewintersnowdepthD(df): #october to april  # * needs cleaning check
   df = df[["Month", "Snow on Grnd (cm)"]].dropna()
   df = df[(df.Month >= 10) | (df.Month <= 4 )]
   df = df.mean().values[0]
@@ -191,7 +191,7 @@ def extremesnowfalldaysD(df):
   #print(len(df))
   return len(df)
 
-def annualsnowfalltotalD(df):
+def annualsnowfalltotalD(df): # * needs cleaning check
   daycount = len(df)
   df = df[["Total Snow (cm)"]].dropna()
   total = df.sum().values[0]
@@ -201,7 +201,7 @@ def annualsnowfalltotalD(df):
   return peryear
 
 
-def drydaysD(df):
+def drydaysD(df): # * needs cleaning check
   daycount = len(df)
   df = df[["Total Precip (mm)"]].dropna()
   df = df[df["Total Precip (mm)"] < 0.2]
@@ -211,7 +211,7 @@ def drydaysD(df):
   return peryear
   
 
-def strongwinddaysD(df):
+def strongwinddaysD(df): # * needs cleaning check
   daycount = len(df)
   df = df[["Spd of Max Gust (km/h)"]].dropna()
   df = df[df["Spd of Max Gust (km/h)"].apply(lambda x: x.isnumeric())]
@@ -226,7 +226,7 @@ def strongwinddaysD(df):
 
 
 
-#def template(data):
+#def template(data): # * needs cleaning check
 ###  df = pd.read_csv(data)
 #  daycount = len(df)
 #  #df = 
