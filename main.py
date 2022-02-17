@@ -35,10 +35,10 @@ def main():
 
   if verbose: print("scrape daily data? ", scrapedailies)
   if scrapedailies:
-    yearrange = [int(x) for x in years[1:-1].split(", ")] # converting to integers
+    #yearrange = [int(x) for x in years[1:-1].split(", ")] # converting to integers
     # build filename based off siteID
     # this section imports all daily data from ECCC at a specific site ID into a saved file
-    dailydata = collectalldailies(siteid, years = yearrange)
+    dailydata = collectalldailies(config)
     with open("temporarydailydata.csv", 'w') as f:
       csvwriter = csv.writer(f)
       for line in dailydata:
@@ -54,7 +54,7 @@ def main():
     print("scraping from climate normals pages...")
     normalsdata = climatetable(normalsreader)
     dailiesdataframe = pd.read_csv('temporarydailydata.csv')
-    reports.final_report(normalsdata, dailiesdataframe)
+    reports.final_report(normalsdata, dailiesdataframe, config=config)
 
 if __name__ == "__main__":
   # ARGUMENTS REMINDER 

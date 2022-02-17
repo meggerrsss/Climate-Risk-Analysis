@@ -7,27 +7,28 @@ import requests
 from bs4 import BeautifulSoup
 from fetchdata import fetchECCC
 from openconfig import openconfig
+    
 
-
-def downloadlist(yr1, yr2):
+def downloadlist(config):
   # builds a list of file names to downbload from ECCC's daily climate data, using yr1,yr2 as an *inclusive* range of years to include
+  siteid = config["siteid"]
   prov = findprov(siteid)
-  for yr in range(yr1, yr2+1):
+  for yr in range(config["years"][0], config["years"][1]+1):
     for i in range(12): #months
-      fil = "climate_daily_" + prov + "_" + str(siteID) + "_" + str(yr) + "-" + str(i+1).zfill(2) + "_P1D.csv"
+      fil = "climate_daily_" + prov + "_" + str(siteid) + "_" + str(yr) + "-" + str(i+1).zfill(2) + "_P1D.csv"
       yield fil
 
 #need to add an error message if there's any missing days
 
 
 
-def collectalldailies(siteid, years = [1981, 2010], limit=-1):
-  openconfig()
-  foldername = "https://dd.weather.gc.ca/climate/observations/daily/csv/" + findprov(
-    siteid) + "/"  # string of location of all the files
+def collectalldailies(config):
+  siteid = config["siteid"]
+  verbose = config["verbose"]
+  foldername = "https://dd.weather.gc.ca/climate/observations/daily/csv/" + findprov(siteid) + "/"  # string of location of all the files
   filenameprefix = "https://dd.weather.gc.ca/climate/observations/daily/csv/" + findprov(siteid) + "/climate_daily_" + findprov(siteid) + "_" + str(siteid)  #only want files that start with this
 
-  if scrapemethod == 1: 
+  if config["scrapemethod"] == 1: 
     # opening the folder to list out the files, slow
     folder = requests.get(foldername, timeout=360)
     soup = BeautifulSoup(folder.text, 'html.parser')
@@ -38,7 +39,7 @@ def collectalldailies(siteid, years = [1981, 2010], limit=-1):
     errors = []
     for link in soup.find_all('a'):
       href = link.get("href")
-      if siteid in href and href.endswith(".csv") and int(href[25:29]) in years: 
+      if siteid in href and href.endswith(".csv") and int(href[25:29]) in config["years"]: 
         if verbose: print("fetching "+href)
         try:
           d = fetchECCC(foldername + href)
@@ -56,12 +57,12 @@ def collectalldailies(siteid, years = [1981, 2010], limit=-1):
     return data
 
 
-  if scrapemethod == 2:
+  if config["scrapemethod"] == 2:
     # using the year range and siteid, create full paths from scratch and only get those, recommended, fast
     header = []
     data = []
     errors = []
-    for item in downloadlist(years[0], years[1]):
+    for item in downloadlist(config):
       if verbose: print("fetching: " + item)
       try:
         d = fetchECCC(foldername + item)

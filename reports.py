@@ -3,7 +3,7 @@ import csv
 from collections import OrderedDict
 
 
-def final_report(chunked_report, dailydata, verbose = False, sigs = 2):
+def final_report(chunked_report, dailydata, verbose = False, sigs = 2, config = None):
   #print("Site ID: " + str(siteid))
 
   d = OrderedDict()
@@ -13,6 +13,16 @@ def final_report(chunked_report, dailydata, verbose = False, sigs = 2):
   d['Diurnal Temperature Deviation'] = from_dailies.diurnaldeviationD(dailydata)
 
   # TEMPERATURE TRY/EXCEPTS
+  report = config["report"]
+  for k in report:
+    if report[k]["run"]:
+      name = report[k]["name"]
+      normal = getattr(from_normals, k)
+      daily = getattr(from_dailies, k +"D")
+      try: d[name] = normal(chunked_report)
+      except: d[name] = daily(dailydata)
+        
+  
   try: d['High Temperatures'] = from_normals.hightemperature(chunked_report)
   except: d['High Temperatures'] = from_dailies.hightemperatureD(dailydata)
 

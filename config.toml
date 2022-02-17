@@ -5,7 +5,7 @@ siteid = "6016527"
 #siteid = "7016294" #error prone site
 
 # download fresh daily data of this siteID 
-scrapedailies = true
+scrapedailies = false
 scrapenormals = true
 
 # 1: pull province's list of files, search for matches to siteID
@@ -17,7 +17,7 @@ timeout = 360
 
 # range of years to consider for scrarping daily data (inclusive)
 # use the format "[yyyy, YYYY]"
-years = "[1981, 2010]"
+years = [1981, 2010]
 
 # amount of missing data across year range in % that will cause an error
 errorthreshold = 10
@@ -27,3 +27,8 @@ verbose = true
 
 # Temperature plot of all daily data
 rplot = false
+sigs = 2
+
+[report]
+hightemperature.run = true
+hightemperature.name = "High Temperature"
