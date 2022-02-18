@@ -5,7 +5,7 @@ siteid = "6016527"
 #siteid = "7016294" #error prone site
 
 # download fresh daily data of this siteID 
-scrapedailies = true
+scrapedailies = false
 scrapenormals = true #needs to be true right now 
 
 # forces a recalculation from the downloaded daily data instead of the climate normals reports
