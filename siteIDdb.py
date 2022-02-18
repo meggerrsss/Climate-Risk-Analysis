@@ -4,7 +4,11 @@ siteIDurl = 'https://dd.weather.gc.ca/climate/observations/climate_station_list.
 
 def fetch(urlname):
   # downloads EC's list of siteIDs
-  sites = pd.read_csv(urlname)
+  try: sites = pd.read_csv(urlname)
+  except: 
+    with open('errorreport.txt', 'a') as f:
+      f.write(str("siteID to province function errored, trying local DB")+'\n')    
+    sites = pd.read_csv('siteIDlist.csv')
   return sites 
 
   

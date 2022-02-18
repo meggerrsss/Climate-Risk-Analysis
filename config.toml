@@ -5,11 +5,11 @@ siteid = "6016527"
 #siteid = "7016294" #error prone site
 
 # download fresh daily data of this siteID 
-scrapedailies = false
+scrapedailies = true
 scrapenormals = true #needs to be true right now 
 
 # forces a recalculation from the downloaded daily data instead of the climate normals reports
-forcedailies = false
+forcedailies = true
 
 # 1: pull province's list of files, search for matches to siteID
 # 2: generate list of paths using siteID (faster, recommended)
@@ -19,14 +19,14 @@ scrapemethod = 2
 timeout = 360
 
 # range of years to consider for scrarping daily data (inclusive)
-# use the format "[yyyy, YYYY]"
+# use the format [yyyy, YYYY]
 years = [1981, 2010]
 
 # amount of missing data across year range in % that will cause an error
 errorthreshold = 10
 
 # print messages
-verbose = false
+verbose = true
 
 # Temperature plot of all daily data
 rplot = false

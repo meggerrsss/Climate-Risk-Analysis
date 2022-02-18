@@ -387,3 +387,6 @@
 404 Client Error: Not Found for url: https://dd.weather.gc.ca/climate/observations/daily/csv/ON/climate_daily_ON_6016527_1989-11_P1D.csv
 404 Client Error: Not Found for url: https://dd.weather.gc.ca/climate/observations/daily/csv/ON/climate_daily_ON_6016527_1989-12_P1D.csv
 404 Client Error: Not Found for url: https://dd.weather.gc.ca/climate/observations/daily/csv/ON/climate_daily_ON_6016527_1990-01_P1D.csv
+siteID to province function errored, trying local DB
+siteID to province function errored, trying local DB
+siteID to province function errored, trying local DB
