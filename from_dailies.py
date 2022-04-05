@@ -21,10 +21,16 @@ def freezethawD(df):
 
 def heatwaveD(df): # * needs cleaning check
   # counts the number of rolling 3 day windows in which temp is >= 30. longer duration events counted multiple times
-  daycount = len(df)
+  df = df[["Max Temp (°C)"]].dropna()
+  daycount = len(df) # after cleaning
+  dfheat = df[df["Max Temp (°C)"] >= 30]
+  print(dfheat)
   df = df[["Max Temp (°C)"]].dropna().rolling(3).min()
-  df = df[df["Max Temp (°C)"] > 30]
+  print(len(df))
+  df = df[df["Max Temp (°C)"] >= 30]
+  print(df)
   eventdates = df.index.array
+  print(eventdates)
   consec = 0 # number of times a rolling 3 day window starts one day apart
   for event in range(len(eventdates)-1):
     if abs(eventdates[event]-eventdates[event+1]) == 1:
@@ -32,6 +38,8 @@ def heatwaveD(df): # * needs cleaning check
   count = len(df) # number of rolling 3 day windows
   discrete = count-consec  # number of discrete events with at least 1 day off
   peryear = float(discrete)/daycount * 365
+  print(count, discrete, peryear)
+  quit()
   return peryear
 
 def coldwaveD(df): # * needs cleaning check
@@ -196,7 +204,48 @@ def strongwinddaysD(df): # * needs cleaning check
   peryear = float(count)/daycount * 365
   #print(count, daycount, peryear)
   return peryear
-    
+
+
+
+def warmestmaximumD(df): 
+  df = df[["Max Temp (°C)"]].dropna().max().values[0]
+  #print(df)
+  return df
+
+
+def meansemperatureD(df): 
+  df = df[["Max Temp (°C)", "Min Temp (°C)"]].dropna()
+  # average of the daily max and the daily min temperatures
+  print(df)
+  quit()
+  return df
+  
+
+# to do from nathan's additional parameters list
+  # Mean Temperature (min and max)
+  # extremely hot days 32, 34
+  # coldest minimum temperature
+  # longest spell of >30 
+  # average length of heat waves
+  # date of first fall frost
+  # date of last spring frost
+  # frost days
+  # frost free season
+  # icing days
+  # mild winter days
+  # winter days
+  #wet days
+  # freezing degree days
+  # heavy precipitation 
+  # - >10mm, >20mm, 3 day max, 5 day max, single day max
+  
+
+
+
+
+
+
+
 
 
 

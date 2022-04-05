@@ -1,6 +1,7 @@
 # Environment Canada's database site ID
-siteid = "6016527"
-#siteid = '6016527' #ottawa 
+siteid = "6106000"
+#siteid = '6016527' #ottawa / pickle lake
+#siteid = '6106000' #ottawa/ airport
 #siteid = '8300060' #pei
 #siteid = "7016294" #error prone site
 
@@ -46,6 +47,8 @@ diurnaldeviation.run = true
 diurnaldeviation.name = "Diurnal Temperature Deviation"
 hightemperature.run = true
 hightemperature.name = "High Temperature"
+warmestmaximum.run = true
+warmestmaximum.name = "Warmest Maximum Temperature"
 lowtemperature.run = true
 lowtemperature.name = "Low Temperatures"
 veryhotdays.run = true
@@ -80,7 +83,7 @@ strongwinddays.run = true
 strongwinddays.name = "Strong Wind Days"
 # GENERALIZABILITY NOTE
 # before adding a new parameter to the bottom of config here, there must be a calculation in from_dailies.py whose name ends with "D" (ie, drydays vs drydaysD). 
-# from_normals is optional and does not need to end in D
+# from_normals is optional and does not end in D
 # the function name must match the lines in this table above 
 # so in from_normals.py: function() and in from_dailies.py: functionD()
 # then add:
