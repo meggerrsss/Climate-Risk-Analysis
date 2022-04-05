@@ -20,17 +20,12 @@ def freezethawD(df):
   return peryear
 
 def heatwaveD(df): # * needs cleaning check
-  # counts the number of rolling 3 day windows in which temp is >= 30. longer duration events counted multiple times
+  # counts the number of rolling 3 day windows in which temp is >= 30. longer duration events listed once
   df = df[["Max Temp (°C)"]].dropna()
   daycount = len(df) # after cleaning
-  dfheat = df[df["Max Temp (°C)"] >= 30]
-  print(dfheat)
   df = df[["Max Temp (°C)"]].dropna().rolling(3).min()
-  print(len(df))
   df = df[df["Max Temp (°C)"] >= 30]
-  print(df)
   eventdates = df.index.array
-  print(eventdates)
   consec = 0 # number of times a rolling 3 day window starts one day apart
   for event in range(len(eventdates)-1):
     if abs(eventdates[event]-eventdates[event+1]) == 1:
@@ -38,15 +33,14 @@ def heatwaveD(df): # * needs cleaning check
   count = len(df) # number of rolling 3 day windows
   discrete = count-consec  # number of discrete events with at least 1 day off
   peryear = float(discrete)/daycount * 365
-  print(count, discrete, peryear)
-  quit()
   return peryear
 
 def coldwaveD(df): # * needs cleaning check
-  # counts the number of rolling 3 day windows in which temp is <-15. longer duration events counted multiple times
+  # counts the number of rolling 3 day windows in which temp is <= -15. longer duration events listed once
+  df = df[["Min Temp (°C)"]].dropna()
   daycount = len(df)
   df = df[["Min Temp (°C)"]].dropna().rolling(3).max()
-  df = df[df["Min Temp (°C)"] < -15]
+  df = df[df["Min Temp (°C)"] <= -15]
   eventdates = df.index.array
   consec = 0
   for event in range(len(eventdates)-1):
@@ -55,6 +49,8 @@ def coldwaveD(df): # * needs cleaning check
   count = len(df)
   discrete = count-consec
   peryear = float(discrete)/daycount * 365
+  print(discrete, peryear)
+  quit()
   return peryear
 
 # more info: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.index.html 
