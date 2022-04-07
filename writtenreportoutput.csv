@@ -1,22 +1,26 @@
-Heat Wave,0.63
-Cold Wave,8.45
-Freeze-Thaw Temperatures,61.35
-Diurnal Temperature Deviation,0.0
-High Temperature,6.02
-Warmest Maximum Temperature,38.8
-Low Temperatures,-4.27
-Very Hot Days,0.0
-Very Cold Days,0.0
+Freeze-Thaw Temperatures,61.22
+Heat Wave,1.91
+High Temperature,11.42
+Warmest Maximum Temperature,33.68
+Mean Temperatures,6.47
+Very Hot Days,13.05
+Very Very Hot Days,4.88
+Extremely Hot Days,1.41
+Diurnal Temperature Amplitude,0.33
+Cold Wave,5.52
+Low Temperatures,1.51
+Coldest Minimum Temperature,-27.94
+Very Cold Days,0.47
 Cooling Degree Days,0.0
 Heating Degree Days,0.0
-Annual Precipitation,717.11
-Spring Precipitation,1.01
-Summer Precipitation,1.75
-Autumn Precipitation,2.45
-Winter Precipitation,1.18
-Annual Snowfall,251.65
-Annual Average Snow Depth,11.69
-Winter Average Snow Depth,6.16
-Extreme Snowfall Days,9
-Dry Days,190.93
-Strong Wind Days,8.99
+Annual Precipitation,936.9
+Spring Precipitation,1.0
+Summer Precipitation,1.76
+Autumn Precipitation,2.48
+Winter Precipitation,1.24
+Annual Snowfall,219.11
+Annual Average Snow Depth,7.25
+Winter Average Snow Depth,6.18
+Extreme Snowfall Days,10
+Dry Days,200.94
+Strong Wind Days,10.43

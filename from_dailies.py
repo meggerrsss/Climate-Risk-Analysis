@@ -49,38 +49,79 @@ def coldwaveD(df): # * needs cleaning check
   count = len(df)
   discrete = count-consec
   peryear = float(discrete)/daycount * 365
-  print(discrete, peryear)
-  quit()
   return peryear
 
 # more info: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.index.html 
 
 def hightemperatureD(df): 
   df = df[["Max Temp (°C)"]].dropna().mean().values[0]
-  #print(df)
   return df
 
 def lowtemperatureD(df):
   df = df[["Min Temp (°C)"]].dropna().mean().values[0]
-  #print(df)
   return df
 
-def veryhotdaysD(df): # * needs cleaning check
+def veryhotdaysD(df):
+  df = df[["Max Temp (°C)"]].dropna()
   daycount = len(df)
   df = df[df["Max Temp (°C)"] > 30].dropna()
   count = len(df)
   peryear = float(count)/daycount * 365
-  if verbose: print(count, daycount, peryear)
+  #if verbose: print(count, daycount, peryear)
+  return peryear
+
+  
+def veryveryhotdaysD(df):
+  df = df[["Max Temp (°C)"]].dropna()
+  daycount = len(df)
+  df = df[df["Max Temp (°C)"] > 32].dropna()
+  count = len(df)
+  peryear = float(count)/daycount * 365
+  #if verbose: print(count, daycount, peryear)
+  return peryear
+
+  
+def extremelyhotdaysD(df):
+  df = df[["Max Temp (°C)"]].dropna()
+  daycount = len(df)
+  df = df[df["Max Temp (°C)"] > 34].dropna()
+  count = len(df)
+  peryear = float(count)/daycount * 365
+  #if verbose: print(count, daycount, peryear
   return peryear
 
 
-def verycolddaysD(df): # * needs cleaning check
+
+
+def verycolddaysD(df):
+  df = df[["Min Temp (°C)"]].dropna()
   daycount = len(df)
   df = df[df["Min Temp (°C)"] < -30].dropna()
   count = len(df)
   peryear = float(count)/daycount * 365
-  if verbose: print(count, daycount, peryear)
+  #if verbose: print(count, daycount, peryear)
   return peryear
+
+  
+def veryverycolddaysD(df):
+  df = df[["Min Temp (°C)"]].dropna()
+  daycount = len(df)
+  df = df[df["Min Temp (°C)"] < -32].dropna()
+  count = len(df)
+  peryear = float(count)/daycount * 365
+  #if verbose: print(count, daycount, peryear)
+  return peryear
+
+  
+def extremelycolddaysD(df):
+  df = df[["Min Temp (°C)"]].dropna()
+  daycount = len(df)
+  df = df[df["Min Temp (°C)"] < -34].dropna()
+  count = len(df)
+  peryear = float(count)/daycount * 365
+  #if verbose: print(count, daycount, peryear
+  return peryear
+
 
 
 def coolingdegreedaysD(df): # * needs cleaning check
@@ -102,13 +143,14 @@ def heatingdegreedaysD(df):  # * needs cleaning check
   return peryear
 
 
-def diurnaldeviationD(df): # * needs cleaning check
+def diurnalamplitudeD(df): 
+  #number of days the max-min temp >=25
+  df = df[["Max Temp (°C)", "Min Temp (°C)"]].dropna()
   daycount = len(df)
-  df = df[df["Max Temp (°C)"] - df["Min Temp (°C)"] > 25].dropna() 
+  df = df[df["Max Temp (°C)"] - df["Min Temp (°C)"] >= 25].dropna() 
   df = df[["Max Temp (°C)", "Min Temp (°C)"]]
   count = len(df)
   peryear = float(count)/daycount * 365
-  #print(df)
   return peryear
 
 
@@ -204,23 +246,47 @@ def strongwinddaysD(df): # * needs cleaning check
 
 
 def warmestmaximumD(df): 
-  df = df[["Max Temp (°C)"]].dropna().max().values[0]
-  #print(df)
+  #option 1: max temp across whole dataset
+  #df1 = df[["Max Temp (°C)"]].dropna().max().values[0]
+  #options 2: annual max temps, then average 
+  df = df[['Year', 'Max Temp (°C)']].groupby(['Year']).max()
+  df = df[["Max Temp (°C)"]].dropna().mean().values[0]
   return df
 
 
-def meansemperatureD(df): 
-  df = df[["Max Temp (°C)", "Min Temp (°C)"]].dropna()
-  # average of the daily max and the daily min temperatures
-  print(df)
-  quit()
+def coldestminimumD(df): # straight to option 2, see warmestmax
+  df = df[['Year', 'Min Temp (°C)']].groupby(['Year']).min()
+  df = df[["Min Temp (°C)"]].dropna().mean().values[0]
   return df
   
 
+def meantemperaturesD(df): 
+  # average of the daily max and the daily min temperatures
+  df = df[["Max Temp (°C)", "Min Temp (°C)"]].dropna()
+  df = df[["Max Temp (°C)", "Min Temp (°C)"]].dropna().mean()
+  df = df.mean()
+  return df
+
+
+def longestheatwaveD(df):
+  #longest stretch of time across the entire duration that temps reach >=30
+  df = df[["Max Temp (°C)"]].dropna()
+  df = df[df["Max Temp (°C)"] >= 30]
+  print(df)
+  eventdates = df.index.array
+  consec = 1
+  print(eventdates)
+  for event in range(len(eventdates)-1):
+    if eventdates[event] == eventdates[event-1]+1:
+      consec += 1
+    else: # eventdates[event] > eventdates[event-1]+1:
+      consec = 1
+  print(consec)
+  
+
+  
+
 # to do from nathan's additional parameters list
-  # Mean Temperature (min and max)
-  # extremely hot days 32, 34
-  # coldest minimum temperature
   # longest spell of >30 
   # average length of heat waves
   # date of first fall frost
