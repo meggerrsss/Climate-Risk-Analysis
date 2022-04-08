@@ -67,7 +67,6 @@ def veryhotdaysD(df):
   df = df[df["Max Temp (°C)"] > 30].dropna()
   count = len(df)
   peryear = float(count)/daycount * 365
-  #if verbose: print(count, daycount, peryear)
   return peryear
 
   
@@ -77,7 +76,6 @@ def veryveryhotdaysD(df):
   df = df[df["Max Temp (°C)"] > 32].dropna()
   count = len(df)
   peryear = float(count)/daycount * 365
-  #if verbose: print(count, daycount, peryear)
   return peryear
 
   
@@ -87,7 +85,6 @@ def extremelyhotdaysD(df):
   df = df[df["Max Temp (°C)"] > 34].dropna()
   count = len(df)
   peryear = float(count)/daycount * 365
-  #if verbose: print(count, daycount, peryear
   return peryear
 
 
@@ -99,7 +96,6 @@ def verycolddaysD(df):
   df = df[df["Min Temp (°C)"] < -30].dropna()
   count = len(df)
   peryear = float(count)/daycount * 365
-  #if verbose: print(count, daycount, peryear)
   return peryear
 
   
@@ -109,7 +105,6 @@ def veryverycolddaysD(df):
   df = df[df["Min Temp (°C)"] < -32].dropna()
   count = len(df)
   peryear = float(count)/daycount * 365
-  #if verbose: print(count, daycount, peryear)
   return peryear
 
   
@@ -117,6 +112,42 @@ def extremelycolddaysD(df):
   df = df[["Min Temp (°C)"]].dropna()
   daycount = len(df)
   df = df[df["Min Temp (°C)"] < -34].dropna()
+  count = len(df)
+  peryear = float(count)/daycount * 365
+  return peryear
+
+  
+def frostdaysD(df):
+  df = df[["Min Temp (°C)"]].dropna()
+  daycount = len(df)
+  df = df[df["Min Temp (°C)"] <= 0].dropna()
+  count = len(df)
+  peryear = float(count)/daycount * 365
+  return peryear
+
+  
+def mildwinterdaysD(df):
+  df = df[["Min Temp (°C)"]].dropna()
+  daycount = len(df)
+  df = df[df["Min Temp (°C)"] <= -5].dropna()
+  count = len(df)
+  peryear = float(count)/daycount * 365
+  return peryear
+
+  
+def winterdaysD(df):
+  df = df[["Min Temp (°C)"]].dropna()
+  daycount = len(df)
+  df = df[df["Min Temp (°C)"] <= -15].dropna()
+  count = len(df)
+  peryear = float(count)/daycount * 365
+  return peryear
+
+  
+def icingdaysD(df):
+  df = df[["Max Temp (°C)"]].dropna()
+  daycount = len(df)
+  df = df[df["Max Temp (°C)"] <= 0].dropna()
   count = len(df)
   peryear = float(count)/daycount * 365
   #if verbose: print(count, daycount, peryear
@@ -154,41 +185,81 @@ def diurnalamplitudeD(df):
   return peryear
 
 
-def annualprecipitationD(df): # * needs cleaning check
-  daycount = len(df)
+def annualprecipitationD(df): 
   df = df[["Total Precip (mm)"]].dropna()
+  daycount = len(df)
   total = df.sum().values[0]
   peryear = float(total)/daycount * 365
-  print(total, daycount, peryear)
-  #print(df)
+  return peryear
+
+  
+def springprecipitationD(df): 
+  df = df[["Month", "Total Precip (mm)"]].dropna()
+  daycount = len(df)
+  df = df[(df['Month'] >= 3) & (df['Month'] <= 5)]
+  total = df.sum().values[1]
+  print(daycount, total)
+  peryear = float(total)/daycount * 365
+  return peryear
+
+  
+def summerprecipitationD(df): 
+  df = df[["Month", "Total Precip (mm)"]].dropna()
+  daycount = len(df)
+  df = df[(df['Month'] >= 6) & (df['Month'] <= 8)]
+  total = df.sum().values[1]
+  print(daycount, total)
+  peryear = float(total)/daycount * 365
+  return peryear
+
+  
+def fallprecipitationD(df): 
+  df = df[["Month", "Total Precip (mm)"]].dropna()
+  daycount = len(df)
+  df = df[(df['Month'] >= 9) & (df['Month'] <= 11)]
+  total = df.sum().values[1]
+  print(daycount, total)
+  peryear = float(total)/daycount * 365
+  return peryear
+
+  
+def winterprecipitationD(df): 
+  df = df[["Month", "Total Precip (mm)"]].dropna()
+  daycount = len(df)
+  df = df[(df.Month == 12) | (df.Month <= 2 )]
+  total = df.sum().values[1]
+  print(daycount, total)
+  peryear = float(total)/daycount * 365
   return peryear
 
 
 # commented out to help with the generalization in reports/config
-def seasonalprecipitationD(df): # * needs cleaning check
-  daycount = len(df)
-  df = df[["Month", "Total Precip (mm)"]].dropna()
-  spring = df[(df['Month'] >= 3) & (df['Month'] <= 5)]
-  summer = df[(df['Month'] >= 6) & (df['Month'] <= 8)]
-  autumn = df[(df['Month'] >= 9) & (df['Month'] <= 11)]
-  winter = df[(df.Month == 12) | (df.Month <= 2 )]
-  #print(spring)
-  #seasoncounts = [len(spring), len(summer), len(autumn), len(winter)]
-  seasontotals = [spring.sum().values[0], summer.sum().values[0], autumn.sum().values[0], winter.sum().values[0]]
-  peryeartotals = [i/float(daycount) for i in seasontotals]
-  #print(peryeartotals)
-  return peryeartotals #spr, sum, aut, win
+#def seasonalprecipitationD(df):
+#  df = df[["Month", "Total Precip (mm)"]].dropna()
+#  daycount = len(df)
+#  spring = df[(df['Month'] >= 3) & (df['Month'] <= 5)]
+##  summer = df[(df['Month'] >= 6) & (df['Month'] <= 8)]
+#  autumn = df[(df['Month'] >= 9) & (df['Month'] <= 11)]
+#  winter = df[(df.Month == 12) | (df.Month <= 2 )]
+#  seasoncounts = [len(spring), len(summer), len(autumn), #len(winter)]
+#  seasontotals = [spring.sum().values[1], #summer.sum().values[1], autumn.sum().values[1], ##winter.sum().values[1]]
+#  print(seasontotals)
+#  perseasonday = [seasontotals[i]/seasoncounts[i] for i in range(4)]
+#  peryear = [i/float(daycount) for i in seasontotals]
+#  #print(peryeartotals)
+#  return peryear #spr, sum, aut, win
+  # NVM this didn't actually save me any time
 
 
 # wrappers to make my life eaiser with the function vs functionD requirement 
-def springprecipitationD(df): 
-  return seasonalprecipitationD(df)[0] 
-def summerprecipitationD(df): 
-  return seasonalprecipitationD(df)[1] 
-def fallprecipitationD(df): 
-  return seasonalprecipitationD(df)[2] 
-def winterprecipitationD(df): 
-  return seasonalprecipitationD(df)[3] 
+#def springprecipitationD(df): 
+#  return seasonalprecipitationD(df)[0] 
+#def summerprecipitationD(df): 
+#  return seasonalprecipitationD(df)[1] 
+#def fallprecipitationD(df): 
+#  return seasonalprecipitationD(df)[2] 
+##def winterprecipitationD(df): 
+ # return seasonalprecipitationD(df)[3] 
 
 
 def annualsnowdepthD(df):
@@ -282,6 +353,7 @@ def longestheatwaveD(df):
     else: # eventdates[event] > eventdates[event-1]+1:
       consec = 1
   print(consec)
+  return consec
   
 
   

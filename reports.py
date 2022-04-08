@@ -83,7 +83,7 @@ def final_report(chunked_report, dailydata, verbose = True, sigs = 2, config = N
 
   if verbose:
     for item in d:
-      print(item, d[item], round(d[item], sigs))
+      print(item, d[item])#, round(d[item], sigs))
 
   with open("writtenreportoutput.csv", 'w') as f:
     csvwriter = csv.writer(f)
