@@ -155,7 +155,8 @@ def icingdaysD(df):
 
 
 
-def coolingdegreedaysD(df): # * needs cleaning check
+def coolingdegreedaysD(df): #
+  df = df[["Mean Temp (°C)"]].dropna()
   daycount = len(df)
   df = df[df["Mean Temp (°C)"] > 18].dropna()
   count = len(df) # number of days >= 18
@@ -164,11 +165,23 @@ def coolingdegreedaysD(df): # * needs cleaning check
   if verbose: print(aboveval, peryear)
   return peryear
 
-def heatingdegreedaysD(df):  # * needs cleaning check
+def heatingdegreedaysD(df):    
+  df = df[["Mean Temp (°C)"]].dropna()
   daycount = len(df)
   df = df[df["Mean Temp (°C)"] < 18].dropna()
   count = len(df) # number of days <= 18
   aboveval = 18*count - df[["Mean Temp (°C)"]].sum().values[0] #number of degrees <=18 summed across the full dataset
+  peryear = float(aboveval)/daycount * 365  # dividing by (number of days with data/365)
+  if verbose: print(aboveval, peryear)
+  return peryear
+
+  
+def freezingdegreedaysD(df):    
+  df = df[["Mean Temp (°C)"]].dropna()
+  daycount = len(df)
+  df = df[df["Mean Temp (°C)"] < 0].dropna()
+  count = len(df) # number of days < 0
+  aboveval = - df[["Mean Temp (°C)"]].sum().values[0] #number of degrees  summed across the full dataset
   peryear = float(aboveval)/daycount * 365  # dividing by (number of days with data/365)
   if verbose: print(aboveval, peryear)
   return peryear
@@ -198,7 +211,6 @@ def springprecipitationD(df):
   daycount = len(df)
   df = df[(df['Month'] >= 3) & (df['Month'] <= 5)]
   total = df.sum().values[1]
-  print(daycount, total)
   peryear = float(total)/daycount * 365
   return peryear
 
@@ -208,7 +220,6 @@ def summerprecipitationD(df):
   daycount = len(df)
   df = df[(df['Month'] >= 6) & (df['Month'] <= 8)]
   total = df.sum().values[1]
-  print(daycount, total)
   peryear = float(total)/daycount * 365
   return peryear
 
@@ -218,7 +229,6 @@ def fallprecipitationD(df):
   daycount = len(df)
   df = df[(df['Month'] >= 9) & (df['Month'] <= 11)]
   total = df.sum().values[1]
-  print(daycount, total)
   peryear = float(total)/daycount * 365
   return peryear
 
@@ -228,38 +238,42 @@ def winterprecipitationD(df):
   daycount = len(df)
   df = df[(df.Month == 12) | (df.Month <= 2 )]
   total = df.sum().values[1]
-  print(daycount, total)
   peryear = float(total)/daycount * 365
   return peryear
 
 
-# commented out to help with the generalization in reports/config
-#def seasonalprecipitationD(df):
-#  df = df[["Month", "Total Precip (mm)"]].dropna()
-#  daycount = len(df)
-#  spring = df[(df['Month'] >= 3) & (df['Month'] <= 5)]
-##  summer = df[(df['Month'] >= 6) & (df['Month'] <= 8)]
-#  autumn = df[(df['Month'] >= 9) & (df['Month'] <= 11)]
-#  winter = df[(df.Month == 12) | (df.Month <= 2 )]
-#  seasoncounts = [len(spring), len(summer), len(autumn), #len(winter)]
-#  seasontotals = [spring.sum().values[1], #summer.sum().values[1], autumn.sum().values[1], ##winter.sum().values[1]]
-#  print(seasontotals)
-#  perseasonday = [seasontotals[i]/seasoncounts[i] for i in range(4)]
-#  peryear = [i/float(daycount) for i in seasontotals]
-#  #print(peryeartotals)
-#  return peryear #spr, sum, aut, win
-  # NVM this didn't actually save me any time
+def annualtemperatureD(df): 
+  df = df[["Mean Temp (°C)"]].dropna()
+  df = df.mean().values[0]
+  return df
 
 
-# wrappers to make my life eaiser with the function vs functionD requirement 
-#def springprecipitationD(df): 
-#  return seasonalprecipitationD(df)[0] 
-#def summerprecipitationD(df): 
-#  return seasonalprecipitationD(df)[1] 
-#def fallprecipitationD(df): 
-#  return seasonalprecipitationD(df)[2] 
-##def winterprecipitationD(df): 
- # return seasonalprecipitationD(df)[3] 
+def springtemperatureD(df): 
+  df = df[['Month', "Mean Temp (°C)"]].dropna()
+  df = df[(df['Month'] >= 3) & (df['Month'] <= 5)]
+  df = df.mean().values[1]
+  return df
+
+
+def summertemperatureD(df): 
+  df = df[['Month', "Mean Temp (°C)"]].dropna()
+  df = df[(df['Month'] >= 6) & (df['Month'] <= 8)]
+  df = df.mean().values[1]
+  return df
+
+
+def falltemperatureD(df): 
+  df = df[['Month', "Mean Temp (°C)"]].dropna()
+  df = df[(df['Month'] >= 9) & (df['Month'] <= 11)]
+  df = df.mean().values[1]
+  return df
+
+
+def wintertemperatureD(df): 
+  df = df[['Month', "Mean Temp (°C)"]].dropna()
+  df = df[(df.Month == 12) | (df.Month <= 2 )]
+  df = df.mean().values[1]
+  return df
 
 
 def annualsnowdepthD(df):
@@ -268,51 +282,63 @@ def annualsnowdepthD(df):
   #print(df)
   return df
 
+
 def averagewintersnowdepthD(df): #october to april  # * needs cleaning check
   df = df[["Month", "Snow on Grnd (cm)"]].dropna()
   df = df[(df.Month >= 10) | (df.Month <= 4 )]
-  df = df.mean().values[0]
+  df = df.mean().values[1]
   #print(df)
   return df
 
+
 def extremesnowfalldaysD(df):
   df = df[["Total Snow (cm)"]].dropna()
-  df = df[df["Total Snow (cm)"] >= 25]
-  #print(df)
-  #print(len(df))
-  return len(df)
-
-def annualsnowfalltotalD(df): # * needs cleaning check
   daycount = len(df)
+  df = df[df["Total Snow (cm)"] >= 25]
+  return len(df)/float(daycount) * 365
+
+
+def annualsnowfalltotalD(df): 
   df = df[["Total Snow (cm)"]].dropna()
+  daycount = len(df)
   total = df.sum().values[0]
   peryear = float(total)/daycount * 365
-  #print(total, daycount, peryear)
-  #print(df)
   return peryear
 
 
-def drydaysD(df): # * needs cleaning check
-  daycount = len(df)
+
+
+def drydaysD(df): 
   df = df[["Total Precip (mm)"]].dropna()
+  daycount = len(df)
   df = df[df["Total Precip (mm)"] < 0.2]
+  count = len(df)
+  peryear = float(count)/daycount * 365
+  #print(count, daycount, peryear)
+  return peryear
+
+  
+def wetdaysD(df): 
+  df = df[["Total Precip (mm)"]].dropna()
+  daycount = len(df)
+  df = df[df["Total Precip (mm)"] >= 0.2]
   count = len(df)
   peryear = float(count)/daycount * 365
   #print(count, daycount, peryear)
   return peryear
   
 
-def strongwinddaysD(df): # * needs cleaning check
-  daycount = len(df)
-  df = df[["Spd of Max Gust (km/h)"]].dropna()
+def strongwinddaysD(df):
+  df = df[['Year',"Spd of Max Gust (km/h)"]].dropna()
+  daycount = len(df)  
   df = df[df["Spd of Max Gust (km/h)"].apply(lambda x: x.isnumeric())]
+  newdaycount = len(df)
   df["Spd of Max Gust (km/h)"] = pd.to_numeric(df["Spd of Max Gust (km/h)"])
-  df = df[df["Spd of Max Gust (km/h)"] >= 63]
-  #print(df)
-  count = len(df)
-  peryear = float(count)/daycount * 365
-  #print(count, daycount, peryear)
-  return peryear
+  df = df[df["Spd of Max Gust (km/h)"] > 63]
+  df = df[['Year', "Spd of Max Gust (km/h)"]].groupby(['Year']).count()
+  df = df.mean()
+  return df.values[0]
+ 
 
 
 
