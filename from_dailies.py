@@ -180,7 +180,7 @@ def freezingdegreedaysD(df):
   df = df[["Mean Temp (°C)"]].dropna()
   daycount = len(df)
   df = df[df["Mean Temp (°C)"] < 0].dropna()
-  count = len(df) # number of days < 0
+  #count = len(df) # number of days < 0
   aboveval = - df[["Mean Temp (°C)"]].sum().values[0] #number of degrees  summed across the full dataset
   peryear = float(aboveval)/daycount * 365  # dividing by (number of days with data/365)
   if verbose: print(aboveval, peryear)
@@ -365,21 +365,28 @@ def meantemperaturesD(df):
   return df
 
 
+
+
+pd.set_option('max_columns', None)
 def longestheatwaveD(df):
   #longest stretch of time across the entire duration that temps reach >=30
+  # strategy implemented from https://joshdevlin.com/blog/calculate-streaks-in-pandas/ 
   df = df[["Max Temp (°C)"]].dropna()
-  df = df[df["Max Temp (°C)"] >= 30]
-  print(df)
-  eventdates = df.index.array
-  consec = 1
-  print(eventdates)
-  for event in range(len(eventdates)-1):
-    if eventdates[event] == eventdates[event-1]+1:
-      consec += 1
-    else: # eventdates[event] > eventdates[event-1]+1:
-      consec = 1
-  print(consec)
-  return consec
+  # creating a column where heatwave conditions are satisfied 
+  df['hot'] = df["Max Temp (°C)"] >= 30
+  # column that says "does the streak start over" -- includes both "heatwave" streak and "not a heatwave" streaks for now
+  df['streakstart'] = df.hot.ne(df.hot.shift())
+  # a new column that is True if this is the start of a heatwave streak, not just any streak
+  df['heatstart'] = df.hot & df.streakstart
+  # heatwave streak number, even numbers are heatwaves, odd are non-heatwaves
+  df['streakid'] = df['streakstart'].cumsum()
+  # counts the number of days in each streak, multiplies by zero if not a heatwave
+  df['streakcounter'] = (df.groupby('streakid').cumcount() + 1)*df.hot
+  # filters the dataframe to see only heatwave streaks greater than 1 for easier visualization of the dataframe 
+  df = df[df.streakcounter>0]
+  longeststreak = df.streakcounter.max()
+  quit()
+  return longeststreak
   
 
   

@@ -37,7 +37,7 @@ sigs = 2
 
 
 [report] # toggle is true or false (case sensitive)
-freezethaw.run = false
+freezethaw.run = true
 freezethaw.name = "Freeze-Thaw Temperatures"
 heatwave.run = true
 heatwave.name = "Heat Wave"
@@ -67,7 +67,7 @@ veryverycolddays.run = false
 veryverycolddays.name = "Very Very Cold Days"
 extremelycolddays.run = false
 extremelycolddays.name = "Extremely Cold Days"
-longestheatwave.run = false
+longestheatwave.run = true
 longestheatwave.name = "Longest Heatwave"
 longestannualheatwave.run = false
 longestannualheatwave.name = "Average Annual Longest Heatwave"
