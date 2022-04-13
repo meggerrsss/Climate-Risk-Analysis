@@ -371,7 +371,7 @@ pd.set_option('max_columns', None)
 def longestheatwaveD(df):
   #longest stretch of time across the entire duration that temps reach >=30
   # strategy implemented from https://joshdevlin.com/blog/calculate-streaks-in-pandas/ 
-  df = df[["Max Temp (°C)"]].dropna()
+  df = df[["Year", "Max Temp (°C)"]].dropna()
   # creating a column where heatwave conditions are satisfied 
   df['hot'] = df["Max Temp (°C)"] >= 30
   # column that says "does the streak start over" -- includes both "heatwave" streak and "not a heatwave" streaks for now
@@ -383,10 +383,18 @@ def longestheatwaveD(df):
   # counts the number of days in each streak, multiplies by zero if not a heatwave
   df['streakcounter'] = (df.groupby('streakid').cumcount() + 1)*df.hot
   # filters the dataframe to see only heatwave streaks greater than 1 for easier visualization of the dataframe 
+  df['streaklength'] = df.heatstart * df.streakcounter.shift()
   df = df[df.streakcounter>0]
+  print(df)
+  print(max(df))
+  # longest heatwave across the entire dataset
   longeststreak = df.streakcounter.max()
+  averagestreak = df.streakcounter.mean()
+  # grouping by years, taking the longest heatwave length per year and averaging across years
+  averagedlongestannualheatwaves = df[['Year', 'streakcounter']].groupby(['Year']).max().streakcounter.mean()
+  print(longeststreak, averagestreak, averagedlongestannualheatwaves)
   quit()
-  return longeststreak
+  return (longeststreak, averagestreak, averagedlongestannualheatwaves)
   
 
   
