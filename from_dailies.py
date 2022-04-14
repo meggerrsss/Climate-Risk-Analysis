@@ -429,6 +429,41 @@ def averageheatwaveD(df):
   return averagestreak
   
 
+def dtn(date):
+  # dtn = date to number, nth day of the year
+  # also adjusts to +1 for leap years correctly
+  newyears = pd.Timestamp(year=date.year, month=1, day=1)
+  return (date-newyears).days+1
+
+
+def firstfallfrostD(df):
+  df = df[["Year", "Month", "Date/Time", "Min Temp (°C)"]].dropna()
+  # i'm not sure if this conversion line actually did anything
+  df['Date/Time'] = pd.to_datetime(df['Date/Time'], format='%Y-%m-%d')
+  # filter to late summer/fall 
+  df = df[df.Month >=7]
+  # filter by frost conditions met
+  df = df[df['Min Temp (°C)']<=0]
+  # first day of each year
+  df = df[['Year', 'Date/Time']].groupby(['Year']).min()
+  df['nth'] = df['Date/Time'].apply(dtn)
+  df = df.nth.mean()
+  return df
+
+
+def lastspringfrostD(df):
+  df = df[["Year", "Month", "Date/Time", "Min Temp (°C)"]].dropna()
+  # i'm not sure if this conversion line actually did anything
+  df['Date/Time'] = pd.to_datetime(df['Date/Time'], format='%Y-%m-%d')
+  # filter to late summer/fall 
+  df = df[df.Month <= 6]
+  # filter by frost conditions met
+  df = df[df['Min Temp (°C)']<=0]
+  # first day of each year
+  df = df[['Year', 'Date/Time']].groupby(['Year']).max()
+  df['nth'] = df['Date/Time'].apply(dtn)
+  df = df.nth.mean()
+  return df
   
 
 # to do from nathan's additional parameters list
