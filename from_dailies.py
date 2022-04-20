@@ -306,6 +306,23 @@ def annualsnowfalltotalD(df):
   return peryear
 
 
+def heavyprecipitationD(df): 
+  df = df[["Total Precip (mm)"]].dropna()
+  daycount = len(df)
+  df = df[df["Total Precip (mm)"] >= 10]
+  count = len(df)
+  peryear = float(count)/daycount * 365
+  return peryear
+
+
+def heavierprecipitationD(df): 
+  df = df[["Total Precip (mm)"]].dropna()
+  daycount = len(df)
+  df = df[df["Total Precip (mm)"] >= 20]
+  count = len(df)
+  peryear = float(count)/daycount * 365
+  return peryear
+
 
 
 def drydaysD(df): 
@@ -467,14 +484,58 @@ def lastspringfrostD(df):
   df = df[["Year", "Month", "Date/Time", "Min Temp (°C)"]].dropna()
   # i'm not sure if this conversion line actually did anything
   df['Date/Time'] = pd.to_datetime(df['Date/Time'], format='%Y-%m-%d')
-  # filter to late summer/fall 
+  # filter to spring/early summer
   df = df[df.Month <= 6]
   # filter by frost conditions met
   df = df[df['Min Temp (°C)']<=0]
-  # first day of each year
+  # last day of each year
   df = df[['Year', 'Date/Time']].groupby(['Year']).max()
   df['nth'] = df['Date/Time'].apply(dtn)
   df = df.nth.mean()
+  return df
+
+pd.set_option('display.max_columns', None)
+def frostfreeseasonD(df, option = 2):
+  if option == 1: # calculating this with streak lengths
+    #better comments for this process can be found in the heatwave tools above
+    df = df[["Year", "Month", "Date/Time", "Min Temp (°C)"]].dropna()
+    #converting dates
+    df['Date/Time'] = pd.to_datetime(df['Date/Time'], format='%Y-%m-%d')
+    # filter by frost conditions met
+    df['frostfree'] = df["Min Temp (°C)"] <=0
+    # lstreak starts
+    df['streakstart'] = df.frostfree.ne(df.frostfree.shift())
+    # frostfree and streakstart
+    df['frostfreestart'] = df.frostfree & df.streakstart
+    # frost/frostfree streak number, even numbers are frosty, odd are frostfree
+    df['streakid'] = df['streakstart'].cumsum()
+    # creating a running count in each streak to count the number of days
+    df['streakcounter'] = (df.groupby('streakid').cumcount() + 1)*df.frostfree
+    #filtering to only streaked periods
+    df = df[df.streakcounter>0]
+    #gathering the data to find the maximum counted value per streak
+    df = df[["Year", "streakid", "streakcounter"]].groupby("streakid").max()
+    #gathering the data by the longest frostfree period per year
+    df = df[["Year", "streakcounter"]].groupby("Year").max()
+    df = df.mean().values[0]
+  elif option == 2: #calculating with both frost start/end calculations
+    df = df[["Year", "Month", "Date/Time", "Min Temp (°C)"]].dropna()
+    df['Date/Time'] = pd.to_datetime(df['Date/Time'], format='%Y-%m-%d')
+    # filter to split time of year for easier calculations later
+    dfa = df[df.Month >=7]
+    dfb = df[df.Month <7]
+    # filter by frost conditions met
+    dfa = dfa[dfa['Min Temp (°C)']<=0]
+    dfb = dfb[dfb['Min Temp (°C)']<=0]
+    # first day of each year
+    dfa = dfa[['Year', 'Date/Time']].groupby(['Year']).min()
+    dfb = dfb[['Year', 'Date/Time']].groupby(['Year']).max()
+    # rezipping the seasons
+    dfa['Spring'] = dfb['Date/Time']
+    dfa['Lengths'] = dfa['Date/Time']-dfa['Spring']
+    #print(dfa)
+    # averaging, extracting
+    df = dfa.Lengths.mean().days
   return df
 
 

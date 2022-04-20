@@ -17,6 +17,7 @@ Average Heatwave,3.82
 First Fall Frost,279.97
 Last Spring Frost,120.3
 Frost Days,154.5
+Frost free Season,159
 Icing Days,77.35
 Mild Winter Days,102.11
 Winter Days,38.77
@@ -37,9 +38,12 @@ Annual Mean Snow Depth,7.25
 Winter Mean Snow Depth,12.49
 Extreme Snowfall Days,0.33
 Annual Snowfall,220.01
+Heavy Precipitation (10mm),29.81
+Heavy Precipitation (20mm),9.53
 Maximum one-day Precipitation,49.29
 Maximum three-day Precipitation,68.33
 Maximum five-day Precipitation,78.3
 Dry Days,201.77
 Wet Days,163.23
-Strong Wind Days,8.4
+Strong Wind Days (>63),8.4
+Stronger Wind Days (>90),1.17
