@@ -338,6 +338,18 @@ def strongwinddaysD(df):
   df = df[['Year', "Spd of Max Gust (km/h)"]].groupby(['Year']).count()
   df = df.mean()
   return df.values[0]
+  
+
+def strongerwinddaysD(df):
+  df = df[['Year',"Spd of Max Gust (km/h)"]].dropna()
+  daycount = len(df)  
+  df = df[df["Spd of Max Gust (km/h)"].apply(lambda x: x.isnumeric())]
+  newdaycount = len(df)
+  df["Spd of Max Gust (km/h)"] = pd.to_numeric(df["Spd of Max Gust (km/h)"])
+  df = df[df["Spd of Max Gust (km/h)"] > 90]
+  df = df[['Year', "Spd of Max Gust (km/h)"]].groupby(['Year']).count()
+  df = df.mean()
+  return df.values[0]
  
 
 
@@ -464,6 +476,31 @@ def lastspringfrostD(df):
   df['nth'] = df['Date/Time'].apply(dtn)
   df = df.nth.mean()
   return df
+
+
+def onedayprecipD(df):
+  df = df[["Year", "Total Precip (mm)"]].dropna()
+  df = df[['Year', "Total Precip (mm)"]].groupby(['Year']).max()
+  df = df.mean().values[0]
+  return df
+
+
+def threedayprecipD(df):
+  df = df[["Year", "Total Precip (mm)"]].dropna()
+  df['sum'] = df[["Total Precip (mm)"]].rolling(3).sum().dropna()
+  df = df[['Year', "Total Precip (mm)", "sum"]].groupby(['Year']).max()
+  df = df.mean().values[1]
+  return df
+
+
+def fivedayprecipD(df):
+  df = df[["Year", "Total Precip (mm)"]].dropna()
+  df['sum'] = df[["Total Precip (mm)"]].rolling(5).sum().dropna()
+  df = df[['Year', "Total Precip (mm)", "sum"]].groupby(['Year']).max()
+  df = df.mean().values[1]
+  return df
+  
+
   
 
 # to do from nathan's additional parameters list

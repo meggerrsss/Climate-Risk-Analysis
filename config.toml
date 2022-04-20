@@ -125,18 +125,20 @@ heavyprecipitation.run = false
 heavyprecipitation.name = "Heavy Precipitation (10mm)"
 heavierprecipitation.run = false
 heavierprecipitation.name = "Heavy Precipitation (20mm)"
-onedayprecip.run = false
+onedayprecip.run = true
 onedayprecip.name = "Maximum one-day Precipitation"
-threedayprecip.run = false
+threedayprecip.run = true
 threedayprecip.name = "Maximum three-day Precipitation"
-fivedayprecip.run = false
+fivedayprecip.run = true
 fivedayprecip.name = "Maximum five-day Precipitation"
 drydays.run = true
 drydays.name = "Dry Days"
 wetdays.run = true
 wetdays.name = "Wet Days"
 strongwinddays.run = true
-strongwinddays.name = "Strong Wind Days"
+strongwinddays.name = "Strong Wind Days (>63)"
+strongwinddays.run = true
+strongerwinddays.name = "Stronger Wind Days (>90)"
 
 # GENERALIZABILITY NOTE
 # before adding a new parameter to the bottom of config here, there must be a calculation in from_dailies.py whose name ends with "D" (ie, drydays vs drydaysD). 
