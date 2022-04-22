@@ -19,7 +19,21 @@ def freezethawD(df):
   peryear = float(count)/cleaneddaycount * 365
   return peryear
 
-def heatwaveD(df): # * needs cleaning check
+
+def heatwaveD(df):
+  dfa = df.copy()
+  dfa = dfa[["Max Temp (°C)"]].dropna()
+  daycount = len(dfa)
+  df = df[["Max Temp (°C)"]].rolling(3).min().dropna()
+  df['hot'] = df["Max Temp (°C)"] >= 30
+  df['streakstart'] = df.hot.ne(df.hot.shift())
+  df['hotstart'] = df.hot & df.streakstart
+  df['streakid'] = df['streakstart'].cumsum()
+  heatwavecounta = df.sum().values[3]
+  peryear = heatwavecounta/float(daycount) * 365
+  return peryear  
+
+def heatwaveDA(df): # archived while debupping
   # counts the number of rolling 3 day windows in which temp is >= 30. longer duration events listed once
   df = df[["Max Temp (°C)"]].dropna()
   daycount = len(df) # after cleaning
@@ -37,20 +51,23 @@ def heatwaveD(df): # * needs cleaning check
 
 
 def coldwaveD(df):
-  daycount = len(df)
+  dfa = df.copy() #branching a copy for daycount but don't want dropped na for the actual cold/heatwave streaks
+  dfa = dfa[["Min Temp (°C)"]].dropna()
+  daycount = len(dfa)
   df = df[["Min Temp (°C)"]].rolling(3).max().dropna()
   df['cold'] = df["Min Temp (°C)"] <= -15
   df['streakstart'] = df.cold.ne(df.cold.shift())
   df['coldstart'] = df.cold & df.streakstart
   df['streakid'] = df['streakstart'].cumsum()
   coldwavecounta = df.sum().values[3]
-  coldwavecountb = df.max().values[4]
+  print(daycount/365.0)
+  quit()
   peryear = coldwavecounta/float(daycount) * 365
   return peryear  
 
 
 
-def coldwaveDA(df): 
+def coldwaveDA(df): # A is for archived temporarily while figuring this out
   # counts the number of rolling 3 day windows in which temp is <= -15. longer duration events listed once
   df = df[["Min Temp (°C)"]].dropna()
   daycount = len(df)
@@ -564,7 +581,7 @@ def onedayprecipD(df):
 
 
 def threedayprecipD(df):
-  df = df[["Year", "Total Precip (mm)"]]
+  df = df[["Year", "Total Precip (mm)"]].dropna()
   df['sum'] = df[["Total Precip (mm)"]].rolling(3).sum().dropna()
   df = df[['Year', "Total Precip (mm)", "sum"]].groupby(['Year']).max()
   df = df.mean().values[1]
@@ -572,7 +589,7 @@ def threedayprecipD(df):
 
 
 def fivedayprecipD(df):
-  df = df[["Year", "Total Precip (mm)"]]
+  df = df[["Year", "Total Precip (mm)"]].dropna()
   df['sum'] = df[["Total Precip (mm)"]].rolling(5).sum().dropna()
   df = df[['Year', "Total Precip (mm)", "sum"]].groupby(['Year']).max()
   df = df.mean().values[1]
