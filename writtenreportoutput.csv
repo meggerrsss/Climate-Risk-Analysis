@@ -1,49 +1,49 @@
-Freeze-Thaw Temperatures,61.22
-Heat Wave,1.91
-High Temperature,11.42
-Warmest Maximum Temperature,33.68
-Mean Temperatures,6.47
-Very Hot Days,13.05
-Very Very Hot Days,4.88
-Extremely Hot Days,1.41
-Diurnal Temperature Amplitude,0.33
-Cold Wave,5.52
-Low Temperatures,1.51
-Coldest Minimum Temperature,-27.94
-Very Cold Days,0.47
-Longest Heatwave,6
-Average Annual Longest Heatwave,3.77
-Average Heatwave,3.82
-First Fall Frost,279.97
-Last Spring Frost,120.3
-Frost Days,154.5
-Frost free Season,159
-Icing Days,77.35
-Mild Winter Days,102.11
-Winter Days,38.77
-Annual Temperature,6.48
-Spring Temperature,5.78
-Summer Temperature,19.8
-Autumn Temperature,8.19
-Winter Temperature,-8.23
-Cooling Degree Days,260.29
-Heating Degree Days,4466.33
-Freezing Degree Days,926.59
-Annual Precipitation,940.76
-Spring Precipitation,218.27
-Summer Precipitation,271.08
-Autumn Precipitation,258.09
-Winter Precipitation,193.32
-Annual Mean Snow Depth,7.25
-Winter Mean Snow Depth,12.49
-Extreme Snowfall Days,0.33
-Annual Snowfall,220.01
-Heavy Precipitation (10mm),29.81
-Heavy Precipitation (20mm),9.53
-Maximum one-day Precipitation,49.29
-Maximum three-day Precipitation,68.33
-Maximum five-day Precipitation,78.3
-Dry Days,201.77
-Wet Days,163.23
-Strong Wind Days (>63),8.4
-Stronger Wind Days (>90),1.17
+Freeze-Thaw Temperatures,61.36
+Heat Wave,1.07
+High Temperature,11.59
+Warmest Maximum Temperature,32.81
+Mean Temperatures,6.82
+Very Hot Days,9.55
+Very Very Hot Days,2.95
+Extremely Hot Days,0.2
+Diurnal Temperature Amplitude,0.07
+Cold Wave,inf
+Low Temperatures,2.06
+Coldest Minimum Temperature,-26.89
+Very Cold Days,0.27
+Longest Heatwave,10
+Average Annual Longest Heatwave,3.41
+Average Heatwave,3.84
+First Fall Frost,285.07
+Last Spring Frost,119.53
+Frost Days,147.46
+Frost free Season,165
+Icing Days,73.55
+Mild Winter Days,97.97
+Winter Days,35.06
+Annual Temperature,6.83
+Spring Temperature,5.91
+Summer Temperature,19.97
+Autumn Temperature,8.68
+Winter Temperature,-7.56
+Cooling Degree Days,273.04
+Heating Degree Days,4348.98
+Freezing Degree Days,858.13
+Annual Precipitation,1000.42
+Spring Precipitation,234.34
+Summer Precipitation,270.27
+Autumn Precipitation,270.54
+Winter Precipitation,225.27
+Annual Mean Snow Depth,3.46
+Winter Mean Snow Depth,5.95
+Extreme Snowfall Days,0.5
+Annual Snowfall,208.3
+Heavy Precipitation (10mm),32.94
+Heavy Precipitation (20mm),10.8
+Maximum one-day Precipitation,50.93
+Maximum three-day Precipitation,68.05
+Maximum five-day Precipitation,79.15
+Dry Days,201.93
+Wet Days,163.07
+Strong Wind Days (>63),10.93
+Stronger Wind Days (>90),1.5

@@ -35,11 +35,26 @@ def heatwaveD(df): # * needs cleaning check
   peryear = float(discrete)/daycount * 365
   return peryear
 
-def coldwaveD(df): # * needs cleaning check
+
+def coldwaveD(df):
+  daycount = len(df)
+  df = df[["Min Temp (°C)"]].rolling(3).max().dropna()
+  df['cold'] = df["Min Temp (°C)"] <= -15
+  df['streakstart'] = df.cold.ne(df.cold.shift())
+  df['coldstart'] = df.cold & df.streakstart
+  df['streakid'] = df['streakstart'].cumsum()
+  coldwavecounta = df.sum().values[3]
+  coldwavecountb = df.max().values[4]
+  peryear = coldwavecounta/float(daycount) * 365
+  return peryear  
+
+
+
+def coldwaveDA(df): 
   # counts the number of rolling 3 day windows in which temp is <= -15. longer duration events listed once
   df = df[["Min Temp (°C)"]].dropna()
   daycount = len(df)
-  df = df[["Min Temp (°C)"]].dropna().rolling(3).max()
+  df = df[["Min Temp (°C)"]].rolling(3).max().dropna()
   df = df[df["Min Temp (°C)"] <= -15]
   eventdates = df.index.array
   consec = 0
@@ -49,6 +64,8 @@ def coldwaveD(df): # * needs cleaning check
   count = len(df)
   discrete = count-consec
   peryear = float(discrete)/daycount * 365
+  print(peryear)
+  quit()
   return peryear
 
 # more info: https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.index.html 
@@ -547,7 +564,7 @@ def onedayprecipD(df):
 
 
 def threedayprecipD(df):
-  df = df[["Year", "Total Precip (mm)"]].dropna()
+  df = df[["Year", "Total Precip (mm)"]]
   df['sum'] = df[["Total Precip (mm)"]].rolling(3).sum().dropna()
   df = df[['Year', "Total Precip (mm)", "sum"]].groupby(['Year']).max()
   df = df.mean().values[1]
@@ -555,7 +572,7 @@ def threedayprecipD(df):
 
 
 def fivedayprecipD(df):
-  df = df[["Year", "Total Precip (mm)"]].dropna()
+  df = df[["Year", "Total Precip (mm)"]]
   df['sum'] = df[["Total Precip (mm)"]].rolling(5).sum().dropna()
   df = df[['Year', "Total Precip (mm)", "sum"]].groupby(['Year']).max()
   df = df.mean().values[1]

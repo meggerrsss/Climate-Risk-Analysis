@@ -1,5 +1,13 @@
 {
   "files": {
+    "from_dailies.py": [
+      {
+        "id": "54dc3f6c-1c0a-4de0-8d67-2efa2b9e8a75",
+        "line": 47,
+        "version": 13899,
+        "index": 1699
+      }
+    ],
     "lenny.py": [
       {
         "id": "28990a41-4f4d-4e6b-b295-529da9dd9204",
