@@ -24,6 +24,7 @@ def heatwaveD(df):
   dfa = df.copy()
   dfa = dfa[["Max Temp (°C)"]].dropna()
   daycount = len(dfa)
+  df = df[["Max Temp (°C)"]].fillna(0) # chosen method to break streaks 
   df = df[["Max Temp (°C)"]].rolling(3).min().dropna()
   df['hot'] = df["Max Temp (°C)"] >= 30
   df['streakstart'] = df.hot.ne(df.hot.shift())
@@ -54,14 +55,13 @@ def coldwaveD(df):
   dfa = df.copy() #branching a copy for daycount but don't want dropped na for the actual cold/heatwave streaks
   dfa = dfa[["Min Temp (°C)"]].dropna()
   daycount = len(dfa)
+  df = df[["Min Temp (°C)"]].fillna(0) # chosen method to break streaks 
   df = df[["Min Temp (°C)"]].rolling(3).max().dropna()
   df['cold'] = df["Min Temp (°C)"] <= -15
   df['streakstart'] = df.cold.ne(df.cold.shift())
   df['coldstart'] = df.cold & df.streakstart
   df['streakid'] = df['streakstart'].cumsum()
   coldwavecounta = df.sum().values[3]
-  print(daycount/365.0)
-  quit()
   peryear = coldwavecounta/float(daycount) * 365
   return peryear  
 
