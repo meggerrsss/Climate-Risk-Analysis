@@ -1,12 +1,13 @@
 # Environment Canada's database site ID
-siteid = "7025250"
+siteid= "6158733" #Toronto
+#siteid = '7025250' #montreal
 #siteid = '6016527' #ottawa / pickle lake
 #siteid = '6106000' #ottawa/ airport
 #siteid = '8300060' #pei
 #siteid = "7016294" #error prone site
 
 # download fresh daily data of this siteID 
-scrapedailies = false
+scrapedailies = true
 scrapenormals = true #needs to be true right now 
 
 # forces a recalculation from the downloaded daily data instead of the climate normals reports

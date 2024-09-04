@@ -434,7 +434,7 @@ def meantemperaturesD(df):
 def longestheatwaveD(df):
   #longest stretch of time across the entire duration that temps reach >=30
   # strategy implemented from https://joshdevlin.com/blog/calculate-streaks-in-pandas/ 
-  df = df[["Year", "Max Temp (°C)"]].dropna()
+  df = df[["Year", "Max Temp (°C)"]].fillna(0)
   # creating a column where heatwave conditions are satisfied 
   df['hot'] = df["Max Temp (°C)"] >= 30
   # column that says "does the streak start over" -- includes both "heatwave" streak and "not a heatwave" streaks for now
@@ -454,7 +454,7 @@ def longestheatwaveD(df):
 def longestannualheatwaveD(df):
   #longest stretch of time across the entire duration that temps reach >=30
   # strategy implemented from https://joshdevlin.com/blog/calculate-streaks-in-pandas/ 
-  df = df[["Year", "Max Temp (°C)"]].dropna()
+  df = df[["Year", "Max Temp (°C)"]].fillna(0)
   # creating a column where heatwave conditions are satisfied 
   df['hot'] = df["Max Temp (°C)"] >= 30
   # column that says "does the streak start over" -- includes both "heatwave" streak and "not a heatwave" streaks for now
@@ -474,7 +474,7 @@ def longestannualheatwaveD(df):
 def averageheatwaveD(df):
   #longest stretch of time across the entire duration that temps reach >=30
   # strategy implemented from https://joshdevlin.com/blog/calculate-streaks-in-pandas/ 
-  df = df[["Year", "Max Temp (°C)"]].dropna()
+  df = df[["Year", "Max Temp (°C)"]].fillna(0)
   # creating a column where heatwave conditions are satisfied 
   df['hot'] = df["Max Temp (°C)"] >= 30
   # column that says "does the streak start over" -- includes both "heatwave" streak and "not a heatwave" streaks for now
@@ -581,7 +581,7 @@ def onedayprecipD(df):
 
 
 def threedayprecipD(df):
-  df = df[["Year", "Total Precip (mm)"]].dropna()
+  df = df[["Year", "Total Precip (mm)"]].fillna(0)
   df['sum'] = df[["Total Precip (mm)"]].rolling(3).sum().dropna()
   df = df[['Year', "Total Precip (mm)", "sum"]].groupby(['Year']).max()
   df = df.mean().values[1]
@@ -589,7 +589,7 @@ def threedayprecipD(df):
 
 
 def fivedayprecipD(df):
-  df = df[["Year", "Total Precip (mm)"]].dropna()
+  df = df[["Year", "Total Precip (mm)"]].fillna(0)
   df['sum'] = df[["Total Precip (mm)"]].rolling(5).sum().dropna()
   df = df[['Year', "Total Precip (mm)", "sum"]].groupby(['Year']).max()
   df = df.mean().values[1]
