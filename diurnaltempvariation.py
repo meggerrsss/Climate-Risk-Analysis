@@ -9,7 +9,9 @@ with open('config.toml', 'rb') as f:
     conf = tomli.load(f)
 
 folder = conf['folder']
-threshold = 15
+scens = conf['scenarios']
+intervals = conf['intervals']
+threshold = 15.0
 
 # from annual files
 def anndiurnaltemperaturevariation():
@@ -30,7 +32,7 @@ def dailydiurnaltempvar():
     tasminlist = os.listdir(os.path.join(folder,'tasmin'))
     tasmaxlist = os.listdir(os.path.join(folder,'tasmax'))
     filesfull = []
-    filesfilt = []
+    #filesfilt = []
 
     for item in tasminlist:
         name = item.replace('tasmin','diurnalvar')
@@ -44,38 +46,64 @@ def dailydiurnaltempvar():
             dbdiff[name] = np.subtract(dbmax[var.replace('var','tasmax')],dbmin[var.replace('var','tasmin')])
         dbdiff = dbdiff.drop_vars([x for x in list(dbdiff.data_vars) if "tasmax" in x])
         dbdiff = dbdiff.convert_calendar("standard", use_cftime = True, align_on='year')
-        dbfilt = dbdiff.where(dbdiff > threshold)
+        #dbfilt = dbdiff.where(dbdiff >= threshold)
 
         filesfull.append(dbdiff)
-        filesfilt.append(dbfilt)
+        #filesfilt.append(dbfilt)
     ds_merged = xr.concat(filesfull, dim="filetitle", data_vars="different")
     ds_merged.to_netcdf(os.path.join(folder, 'diurnal-variation', 'generated_full.nc'))
 
-    ds_filt = xr.concat(filesfilt, dim="filetitle", data_vars="different")
-    ds_filt.to_netcdf(os.path.join(folder, 'diurnal-variation', 'generated_filt.nc'))
+    #ds_filt = xr.concat(filesfilt, dim="filetitle", data_vars="different")
+    #ds_filt.to_netcdf(os.path.join(folder, 'diurnal-variation', 'generated_filt.nc'))
     return ds_merged
 
-# opening the diurnal diff file again
-varidb = xr.open_dataset(os.path.join(folder, 'diurnal-variation', 'generated_full.nc'))
 
-intervals = conf['intervals']
 
-# converting to threshold exceedence
-filtered = varidb.where(varidb > 15)
+def write():
+    # opening the diurnal diff file again
+    varidb = xr.open_dataset(os.path.join(folder, 'diurnal-variation', 'generated_full.nc'))
 
-# making the csv
-filename = os.path.join(folder, 'diurnal-variation', 'output.xlsx')
+    intervals = conf['intervals']
 
-with pd.ExcelWriter(filename) as writer:
+    # converting to threshold exceedence # xr.where(ds["value"] >= 80, 1., 0.)
+    filtered = xr.where(varidb >= 15, 1., 0.)
 
+    # making the csv
+    filename = os.path.join(folder, 'diurnal-variation', 'output.xlsx')
+
+    with pd.ExcelWriter(filename) as writer:
+
+        for inte in intervals:
+
+            starttime = datetime(year=inte[0], month=1, day=1)
+            endtime = datetime(year=inte[1], month=12, day=31)
+            subset = filtered.sel(time = slice(starttime, endtime))
+            mean = subset.mean(dim = 'time')
+            intedata = mean.to_pandas().transpose()
+            inte_tabname = f"{inte[0]}-{inte[1]}"
+
+            intedata.to_excel(writer, sheet_name=inte_tabname, index=True)
+
+
+# alright attempt #3 using chris's preferred methodology
+# take model average daily high - daily low, determine count of days / 30y that are >= 15
+
+def modelavgfirst():
+    maxdata = pd.read_csv(r"C:\Climate-Data\stjohns\tasmax_ssp_averages.csv")
+    mindata = pd.read_csv(r"C:\Climate-Data\stjohns\tasmin_ssp_averages.csv")
+    maxdata['time'] = pd.to_datetime(maxdata['time'])
+    mindata['time'] = pd.to_datetime(mindata['time'])
+    maxdata = maxdata.set_index('time')
+    mindata = mindata.set_index('time')
+    diff = maxdata-mindata
+    #range = (np.max(diff), np.min(diff))
+    output = pd.DataFrame()
     for inte in intervals:
+        starttime = datetime(year=inte[0], month=1, day=1)
+        endtime = datetime(year=inte[1], month=12, day=31)
+        timefiltered_diff = diff.loc[starttime:endtime]
+        thres = timefiltered_diff.where(timefiltered_diff>=15).count()
+        output[f"{inte[0]}-{inte[1]}"] = thres
+    print(output)
 
-        starttime = datetime.strptime(str(inte[0]), "%Y")
-        endtime = datetime.strptime(str(inte[1]), "%Y")
-        subset = filtered.sel(time = slice(starttime, endtime))
-        mean = subset.mean(dim = 'time')
-        intedata = mean.to_pandas().transpose()
-        inte_tabname = f"{inte[0]}-{inte[1]}"
-
-        intedata.to_excel(writer, sheet_name=inte_tabname, index=True)
-
+print(modelavgfirst())
