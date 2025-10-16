@@ -1,0 +1,151 @@
+# Environment Canada's database site ID
+siteid= "6158733" #Toronto
+#siteid = '7025250' #montreal
+#siteid = '6016527' #ottawa / pickle lake
+#siteid = '6106000' #ottawa/ airport
+#siteid = '8300060' #pei
+#siteid = "7016294" #error prone site
+
+# download fresh daily data of this siteID 
+scrapedailies = true
+scrapenormals = true #needs to be true right now 
+
+# forces a recalculation from the downloaded daily data instead of the climate normals reports
+forcedailies = true
+
+# 1: pull province's list of files, search for matches to siteID
+# 2: generate list of paths using siteID (faster, recommended)
+scrapemethod = 2
+
+# for scrapemethod 1, amount of time the get is allowed to run for
+timeout = 360
+
+# range of years to consider for scrarping daily data (inclusive)
+# use the format [yyyy, YYYY]
+years = [1981, 2010]
+
+# amount of missing data across year range in % that will cause an error
+errorthreshold = 10
+
+# print messages
+verbose = true
+
+# Temperature plot of all daily data
+rplot = false
+
+# number of sig digits used in report's second value column
+sigs = 2
+
+
+[report] # toggle is true or false (case sensitive)
+freezethaw.run = true
+freezethaw.name = "Freeze-Thaw Temperatures"
+heatwave.run = true
+heatwave.name = "Heat Wave"
+hightemperature.run = true
+hightemperature.name = "High Temperature"
+warmestmaximum.run = true
+warmestmaximum.name = "Warmest Maximum Temperature"
+meantemperatures.run = true
+meantemperatures.name = "Mean Temperatures"
+veryhotdays.run = true
+veryhotdays.name = "Very Hot Days"
+veryveryhotdays.run = true
+veryveryhotdays.name = "Very Very Hot Days"
+extremelyhotdays.run = true
+extremelyhotdays.name = "Extremely Hot Days"
+diurnalamplitude.run = true
+diurnalamplitude.name = "Diurnal Temperature Amplitude"
+coldwave.run = true
+coldwave.name = "Cold Wave"
+lowtemperature.run = true
+lowtemperature.name = "Low Temperatures"
+coldestminimum.run = true
+coldestminimum.name = "Coldest Minimum Temperature"
+verycolddays.run = true
+verycolddays.name = "Very Cold Days"
+veryverycolddays.run = false
+veryverycolddays.name = "Very Very Cold Days"
+extremelycolddays.run = false
+extremelycolddays.name = "Extremely Cold Days"
+longestheatwave.run = true
+longestheatwave.name = "Longest Heatwave"
+longestannualheatwave.run = true
+longestannualheatwave.name = "Average Annual Longest Heatwave"
+averageheatwave.run = true
+averageheatwave.name = "Average Heatwave"
+firstfallfrost.run = true
+firstfallfrost.name = "First Fall Frost"
+lastspringfrost.run = true
+lastspringfrost.name = "Last Spring Frost"
+frostdays.run = true
+frostdays.name = "Frost Days"
+frostfreeseason.run = true
+frostfreeseason.name = "Frost free Season"
+icingdays.run = true
+icingdays.name = "Icing Days"
+mildwinterdays.run = true
+mildwinterdays.name = "Mild Winter Days"
+winterdays.run = true
+winterdays.name = "Winter Days"  
+annualtemperature.run = true
+annualtemperature.name = "Annual Temperature"
+springtemperature.run = true
+springtemperature.name = "Spring Temperature"
+summertemperature.run = true
+summertemperature.name = "Summer Temperature"
+falltemperature.run = true
+falltemperature.name = "Autumn Temperature"
+wintertemperature.run = true
+wintertemperature.name = "Winter Temperature"
+coolingdegreedays.run = true
+coolingdegreedays.name = "Cooling Degree Days"
+heatingdegreedays.run = true
+heatingdegreedays.name = "Heating Degree Days"
+freezingdegreedays.run = true
+freezingdegreedays.name = "Freezing Degree Days"
+annualprecipitation.run = true
+annualprecipitation.name = "Annual Precipitation"
+springprecipitation.run = true
+springprecipitation.name = "Spring Precipitation"
+summerprecipitation.run = true
+summerprecipitation.name = "Summer Precipitation"
+fallprecipitation.run = true
+fallprecipitation.name = "Autumn Precipitation"
+winterprecipitation.run = true
+winterprecipitation.name = "Winter Precipitation"
+annualsnowdepth.run = true
+annualsnowdepth.name = "Annual Mean Snow Depth"
+averagewintersnowdepth.run = true
+averagewintersnowdepth.name = "Winter Mean Snow Depth"
+extremesnowfalldays.run = true
+extremesnowfalldays.name = "Extreme Snowfall Days"
+annualsnowfalltotal.run = true
+annualsnowfalltotal.name = "Annual Snowfall"
+heavyprecipitation.run = true
+heavyprecipitation.name = "Heavy Precipitation (10mm)"
+heavierprecipitation.run = true
+heavierprecipitation.name = "Heavy Precipitation (20mm)"
+onedayprecip.run = true
+onedayprecip.name = "Maximum one-day Precipitation"
+threedayprecip.run = true
+threedayprecip.name = "Maximum three-day Precipitation"
+fivedayprecip.run = true
+fivedayprecip.name = "Maximum five-day Precipitation"
+drydays.run = true
+drydays.name = "Dry Days"
+wetdays.run = true
+wetdays.name = "Wet Days"
+strongwinddays.run = true
+strongwinddays.name = "Strong Wind Days (>63)"
+strongerwinddays.run = true
+strongerwinddays.name = "Stronger Wind Days (>90)"
+
+# GENERALIZABILITY NOTE
+# before adding a new parameter to the bottom of config here, there must be a calculation in from_dailies.py whose name ends with "D" (ie, drydays vs drydaysD). 
+# from_normals is optional and does not end in D
+# the function name must match the lines in this table above 
+# so in from_normals.py: function() and in from_dailies.py: functionD()
+# then add:
+# function.run = true/false
+# function.name = "name that appears in the report output"
