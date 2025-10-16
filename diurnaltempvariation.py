@@ -88,22 +88,50 @@ def write():
 # alright attempt #3 using chris's preferred methodology
 # take model average daily high - daily low, determine count of days / 30y that are >= 15
 
-def modelavgfirst():
-    maxdata = pd.read_csv(r"C:\Climate-Data\stjohns\tasmax_ssp_averages.csv")
-    mindata = pd.read_csv(r"C:\Climate-Data\stjohns\tasmin_ssp_averages.csv")
-    maxdata['time'] = pd.to_datetime(maxdata['time'])
-    mindata['time'] = pd.to_datetime(mindata['time'])
-    maxdata = maxdata.set_index('time')
-    mindata = mindata.set_index('time')
+def avgssps(file):
+    df = pd.read_csv(file)
+    df['time'] = pd.to_datetime(df['time'])
+    df=df.set_index('time')
+
+    for scen in scens:
+        matching_columns = [col for col in df.columns if scen in col]
+        df[f"{scen}"] = df[matching_columns].mean(axis=1)
+
+    df = df[["ssp126", "ssp245", "ssp370", "ssp585"]]
+    return df
+
+
+print(avgssps(r"C:\Climate-Data\stjohns\tasmin-csv\tasmin.csv"))
+
+
+
+
+
+
+def modelavgfirst(thres):
+    # copilot versions
+    #maxdata = pd.read_csv(r"C:\Climate-Data\stjohns\tasmax_ssp_averages.csv")
+    #mindata = pd.read_csv(r"C:\Climate-Data\stjohns\tasmin_ssp_averages.csv")
+    #maxdata['time'] = pd.to_datetime(maxdata['time'])
+    #mindata['time'] = pd.to_datetime(mindata['time'])
+    #maxdata = maxdata.set_index('time')
+    #mindata = mindata.set_index('time')
+
+    # my caltulated versions
+    maxdata = avgssps(r"C:\Climate-Data\stjohns\taxmax-csv\tasmax.csv")
+    mindata = avgssps(r"C:\Climate-Data\stjohns\tasmin-csv\tasmin.csv")
+
+
     diff = maxdata-mindata
-    #range = (np.max(diff), np.min(diff))
     output = pd.DataFrame()
+
     for inte in intervals:
         starttime = datetime(year=inte[0], month=1, day=1)
         endtime = datetime(year=inte[1], month=12, day=31)
         timefiltered_diff = diff.loc[starttime:endtime]
-        thres = timefiltered_diff.where(timefiltered_diff>=15).count()
-        output[f"{inte[0]}-{inte[1]}"] = thres
+        thres_filter = timefiltered_diff.where(timefiltered_diff>=thres).count()
+        output[f"{inte[0]}-{inte[1]}"] = thres_filter
     print(output)
+    output.to_csv(os.path.join(folder, 'diurnal-variation', 'model.csv'))
 
-print(modelavgfirst())
+print(modelavgfirst(15.0))
