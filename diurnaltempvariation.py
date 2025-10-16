@@ -88,11 +88,14 @@ def write():
 # alright attempt #3 using chris's preferred methodology
 # take model average daily high - daily low, determine count of days / 30y that are >= 15
 
-def avgssps(file):
+def openfile(file):
     df = pd.read_csv(file)
     df['time'] = pd.to_datetime(df['time'])
     df=df.set_index('time')
+    return df
 
+
+def avgssps(df):
     for scen in scens:
         matching_columns = [col for col in df.columns if scen in col]
         df[f"{scen}"] = df[matching_columns].mean(axis=1)
@@ -101,7 +104,7 @@ def avgssps(file):
     return df
 
 
-print(avgssps(r"C:\Climate-Data\stjohns\tasmin-csv\tasmin.csv"))
+#print(avgssps(openfile(r"C:\Climate-Data\stjohns\tasmin-csv\tasmin.csv")))
 
 
 
@@ -117,12 +120,18 @@ def modelavgfirst(thres):
     #maxdata = maxdata.set_index('time')
     #mindata = mindata.set_index('time')
 
-    # my caltulated versions
-    maxdata = avgssps(r"C:\Climate-Data\stjohns\taxmax-csv\tasmax.csv")
-    mindata = avgssps(r"C:\Climate-Data\stjohns\tasmin-csv\tasmin.csv")
+    # my calculated versions -- diff of ensembles
+    #axdata = avgssps(openfile(r"C:\Climate-Data\stjohns\taxmax-csv\tasmax.csv"))
+    #mindata = avgssps(openfile(r"C:\Climate-Data\stjohns\tasmin-csv\tasmin.csv"))
+    #diff = maxdata-mindata
 
+    # calatulated versions -- ensemble of diffs
+    maxdata = openfile(r"C:\Climate-Data\stjohns\taxmax-csv\tasmax.csv")
+    mindata = openfile(r"C:\Climate-Data\stjohns\tasmin-csv\tasmin.csv")
+    maxdata.columns = [x.replace("tasmax_","") for x in maxdata.columns]
+    mindata.columns = [x.replace("tasmin_","") for x in mindata.columns]
+    diff = avgssps(maxdata-mindata)
 
-    diff = maxdata-mindata
     output = pd.DataFrame()
 
     for inte in intervals:
