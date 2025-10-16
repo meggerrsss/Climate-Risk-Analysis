@@ -138,7 +138,7 @@ def modelavgfirst(thres):
         starttime = datetime(year=inte[0], month=1, day=1)
         endtime = datetime(year=inte[1], month=12, day=31)
         timefiltered_diff = diff.loc[starttime:endtime]
-        thres_filter = timefiltered_diff.where(timefiltered_diff>=thres).count()
+        thres_filter = timefiltered_diff.where(timefiltered_diff >= thres).count()
         output[f"{inte[0]}-{inte[1]}"] = thres_filter
     print(output)
     output.to_csv(os.path.join(folder, 'diurnal-variation', 'model.csv'))
