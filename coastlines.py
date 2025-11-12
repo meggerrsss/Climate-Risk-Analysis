@@ -1,21 +1,37 @@
 import geopandas as gpd
 import pandas as pd
 from shapely.geometry import Point
+from shapely.geometry import MultiLineString, LineString
 import numpy as np
 from scipy.spatial import cKDTree
 from geopy.distance import geodesic
 from math import radians, sin, cos
+import os
 
-sites = pd.read_csv(r"C:\Users\CAMG038492\Code\Climatology\archive\locations.csv")
-file = r"C:\Users\CAMG038492\WSP O365\WDS-Digital Environment - Climatology Datasets - Climatology Datasets\Natural Earth Coastline Data\ne_10m_coastline\ne_10m_coastline.shp"
-coastline = gpd.read_file(file)
+# locations to find
+testsites = pd.read_csv(r"C:\Users\CAMG038492\Code\Climatology\archive\locations.csv")
+sites = pd.read_csv(r"C:\Users\CAMG038492\OneDrive - WSP O365\Documents\Climate Data\NF Power GIS\Full Points CSV\minimalpoints.csv")
+
+# coastline data
+ne_file = r"C:\Users\CAMG038492\WSP O365\WDS-Digital Environment - Climatology Datasets - Climatology Datasets\Natural Earth Coastline Data\ne_10m_coastline\ne_10m_coastline.shp"
+nf_file = r"C:\Users\CAMG038492\OneDrive - WSP O365\Documents\Climate Data\NF Power GIS\testing coastline shapefile conversion\erosion.shp"
+ne_coastline = gpd.read_file(ne_file)
+nf_coastline = gpd.read_file(nf_file)
+coastline = nf_coastline
+outputfolder = r"C:\Users\CAMG038492\OneDrive - WSP O365\Documents\Climate Data\NF Power GIS\Coastline CSVs"
+
+
+create_sample = True
+if create_sample:
+    sites = sites.sample(n=30, random_state=42)
+    sites.to_csv(os.path.join(outputfolder, "sample-sites.csv"))
 
 points = []
 for geom in coastline.geometry:
     if geom.geom_type == 'LineString':
         points.extend(list(geom.coords))
     elif geom.geom_type == 'MultiLineString':
-        for line in geom:
+        for line in geom.geoms:
             points.extend(list(line.coords))
 
 coords = np.array(points)
@@ -77,6 +93,11 @@ sites["Nearest coast (lat)"] = sites.apply(v_nearestloc, which="lat", axis = 1)
 sites["Nearest coast (lon)"] = sites.apply(v_nearestloc, which="lon", axis = 1)
 sites["Coastline coverage at 50km (%)"] = sites.apply(v_angles, km = 50, axis = 1)
 
+# exporting
+if export := True:
+    sites[["Nearest coast (lat)", "Nearest coast (lon)"]].to_csv(os.path.join(outputfolder, "nearest-coast.csv"))
+
+# printing
 pd.set_option('display.max_rows', None)
 pd.set_option('display.max_columns', None)
 pd.set_option('display.colheader_justify', 'center')
