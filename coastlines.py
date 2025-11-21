@@ -11,7 +11,7 @@ from tqdm import tqdm
 # locations to find
 testsites = pd.read_csv(r"C:\Users\CAMG038492\Code\Climatology\archive\locations.csv")
 #sites = pd.read_csv(r"C:\Users\CAMG038492\OneDrive - WSP O365\Documents\Climate Data\NF Power GIS\Full Points CSV\minimalpoints.csv")
-sitesfolder = r"C:\Users\CAMG038492\OneDrive - WSP O365\Documents\Climate Data\NF Power GIS\Point CSVs\4326"
+sitesfolder = r"C:\Users\CAMG038492\OneDrive - WSP O365\Documents\Climate Data\NF Power GIS\Point CSVs\4326 with elevation"
 #sites = pd.read_csv(r"C:\Users\CAMG038492\OneDrive - WSP O365\Documents\Climate Data\NF Power GIS\Point CSVs\4326\Capacitors.csv")
 
 # coastline data
@@ -35,35 +35,44 @@ def open_csvs(folder):
 
 # interpolate linestrings to be denser, so that locations on midpoints of string can be valid "closests"
 def densify_linestring(linestring, interval):
+    # something about this function is exporting into points and not tuples that the ckdtree needs
     if interval == '':
         return list(linestring.coords)
     else:
         length = linestring.length
         distances = np.arange(0, length, interval)
         points = [linestring.interpolate(distance) for distance in distances]
-        points.append(linestring.interpolate(length))
+        numpoints = [(t.x,t.y) for t in points]
+        s = linestring.interpolate(length)
+        interpolated = s.x,s.y
+        numpoints.append(interpolated)
     return points
 
 # create database of coastline linestring verticies
 points = []
-for geom in tqdm(coastline.geometry, desc = "Building Tree: "):
+interpolate = ''
+for geom in tqdm(coastline.geometry, desc = "Building Tree:"):
     if geom.geom_type == 'Point':
         points.extend(geom.coords[0])
     elif geom.geom_type == 'LineString':
-        points.extend(densify_linestring(geom, ''))
+        points.extend(densify_linestring(geom, interpolate))
         #points.extend(list(geom.coords))
     elif geom.geom_type == 'MultiLineString':
         for line in geom.geoms:
-            points.extend(densify_linestring(line, ''))
+            points.extend(densify_linestring(line, interpolate))
             #points.extend(list(line.coords))
-
 
 # create tree of coastlines
 coords = np.array(points)
 tree = cKDTree(coords)
 
+if create_checkpoint:=True:
+    coordspd = pd.DataFrame(coords)
+    coordspd.to_csv(os.path.join(outputfolder, "coast-points-checkpoint.csv"))
+    print(f"linestrings exported")
+
 # finding the distance to the nearest coastline, in km
-def nearestdist(lat, lon, tree, coords, crs = 'ESRI:53032'):
+def nearest(lat, lon, tree, coords, crs = 'ESRI:53032'):
     # convert query point to a Point
     query_point = gpd.GeoSeries([Point(lon, lat)], crs='EPSG:4326')
     query_point_proj = query_point.to_crs(crs)
@@ -79,37 +88,21 @@ def nearestdist(lat, lon, tree, coords, crs = 'ESRI:53032'):
     outx, outy = nearestpt_4326.geometry[0].x, nearestpt_4326.geometry[0].y
 
     # return distance
-    return geodesic((lat, lon), (outy, outx)).kilometers
+    outd = {}
+    outd['distance'] = geodesic((lat, lon), (outy, outx)).kilometers
+    outd['position'] = [outy, outx]
+    return outd
 
-def v_nearestdist(row):
-    return nearestdist(lat = row.Y, lon = row.X, tree = tree, coords = coords)
 
-# finding the location of the nearest coastline, in lat,lon
-def nearestloc(lat, lon, tree, coords, crs = 'ESRI:53032'):
-    # convert query point to a Point
-    query_point = gpd.GeoSeries([Point(lon, lat)], crs='EPSG:4326')
-    query_point_proj = query_point.to_crs(crs)
-    x, y = query_point_proj.geometry[0].x, query_point_proj.geometry[0].y
-
-    # do the tree
-    i, idx = tree.query([x, y])
-    nearestpt = coords[idx]
-
-    # convert point to a Point again
-    nearestpt_crs = gpd.GeoSeries([Point(nearestpt[0], nearestpt[1])], crs=crs)
-    nearestpt_4326 = nearestpt_crs.to_crs('EPSG:4326')
-    outx, outy = nearestpt_4326.geometry[0].x, nearestpt_4326.geometry[0].y
-
-    # return locations
-    return [outy, outx]
-
-def v_nearestloc(row, which:str):
+def v_nearest(row, which:str):
+    if which == "dist":
+        return nearest(lat = row.Y, lon = row.X, tree = tree, coords = coords)['distance']
     if which == "both":
-        return nearestloc(lat = row.Y, lon = row.X, tree = tree, coords = coords)
+        return nearest(lat = row.Y, lon = row.X, tree = tree, coords = coords)['position']
     if which == "lat":
-        return nearestloc(lat = row.Y, lon = row.X, tree = tree, coords = coords)[0]
+        return nearest(lat = row.Y, lon = row.X, tree = tree, coords = coords)['position'][0]
     if which == "lon":
-        return nearestloc(lat = row.Y, lon = row.X, tree = tree, coords = coords)[1]
+        return nearest(lat = row.Y, lon = row.X, tree = tree, coords = coords)['position'][1]
 
 # finding the angular coverage of coastline a specific distance away
 # exactly at 50km, would need to test for within 50km probably
@@ -149,10 +142,10 @@ for site,df in open_csvs(sitesfolder).items():
         sites = sites.sample(n=30, random_state=42)
         sites.to_csv(os.path.join(outputfolder, "sample-sites.csv"))
 
-    sites["Nearest coast (km)"] = sites.apply(v_nearestdist, axis = 1)
-    sites["Nearest coast (lat,lon)"] = sites.apply(v_nearestloc, which="both", axis = 1)
-    sites["Nearest coast (lat)"] = sites.apply(v_nearestloc, which="lat", axis = 1)
-    sites["Nearest coast (lon)"] = sites.apply(v_nearestloc, which="lon", axis = 1)
+    sites["Nearest coast (km)"] = sites.apply(v_nearest, which="dist", axis = 1)
+    sites["Nearest coast (lat,lon)"] = sites.apply(v_nearest, which="both", axis = 1)
+    sites["Nearest coast (lat)"] = sites.apply(v_nearest, which="lat", axis = 1)
+    sites["Nearest coast (lon)"] = sites.apply(v_nearest, which="lon", axis = 1)
     #sites["Coastline coverage at 50km (%)"] = sites.apply(v_angles, km = 50, axis = 1)
 
     # exporting
@@ -161,15 +154,15 @@ for site,df in open_csvs(sitesfolder).items():
             sites[["Nearest coast (lat)", "Nearest coast (lon)"]].to_csv(os.path.join(outputfolder, "sample-nearest-coast.csv"))
             exit()
         else:
-            newfolder = sitesfolder.replace(r"Point CSVs\4326", r"Coastline CSVs\Exports")
+            newfolder = r"C:\Users\CAMG038492\OneDrive - WSP O365\Documents\Climate Data\NF Power GIS\Coastline CSVs\Exports"
             sites.to_csv(os.path.join(newfolder, name))
             print(f"coastline file created for {name}")
 
 
 
 # printing options
-pd.set_option('display.max_rows', None)
+pd.set_option('display.max_rows', 20)
 pd.set_option('display.max_columns', None)
 pd.set_option('display.colheader_justify', 'center')
-pd.set_option('display.precision', 3)
-print(sites)
+pd.set_option('display.precision', 10)
+print(sites.head())
