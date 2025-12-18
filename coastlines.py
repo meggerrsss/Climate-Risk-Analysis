@@ -13,20 +13,24 @@ from tqdm import tqdm
 # locations to find
 testsites = pd.read_csv(r"C:\Users\CAMG038492\Code\Climatology\archive\locations.csv")
 #sites = pd.read_csv(r"C:\Users\CAMG038492\OneDrive - WSP O365\Documents\Climate Data\NF Power GIS\Full Points CSV\minimalpoints.csv")
-sitesfolder = r"C:\Users\CAMG038492\OneDrive - WSP O365\Documents\Climate Data\NF Power GIS\Point CSVs\4326 with elevation"
+#sitesfolder = r"C:\Users\CAMG038492\OneDrive - WSP O365\Documents\Climate Data\NF Power GIS\Point CSVs\4326 with elevation"
 #sites = pd.read_csv(r"C:\Users\CAMG038492\OneDrive - WSP O365\Documents\Climate Data\NF Power GIS\Point CSVs\4326\Capacitors.csv")
-sitesfolder = r"C:\Users\CAMG038492\OneDrive - WSP O365\Documents\Climate Data\NF Power GIS\Underground"
+#sitesfolder = r"C:\Users\CAMG038492\OneDrive - WSP O365\Documents\Climate Data\NF Power GIS\Underground"
+sitesfolder = r"C:\Users\CAMG038492\OneDrive - WSP O365\Documents\Climate Data\NF Power GIS\Full Points CSV"
 
 # coastline data
 ne_file = r"C:\Users\CAMG038492\WSP O365\WDS-Digital Environment - Climatology Datasets - Climatology Datasets\Natural Earth Coastline Data\ne_10m_coastline\ne_10m_coastline.shp"
 nf_file = r"C:\Users\CAMG038492\OneDrive - WSP O365\Documents\Climate Data\NF Power GIS\testing coastline shapefile conversion\erosion.shp"
 nf_file_azi = r"C:\Users\CAMG038492\OneDrive - WSP O365\Documents\Climate Data\NF Power GIS\testing coastline shapefile conversion\erosion-azi.shp"
+cancoast = r"C:\Users\CAMG038492\OneDrive - WSP O365\Documents\Climate Data\NF Power GIS\Shapefiles\CanCoastFiltered\newfoundland_can_coast.shp"
 ne_coastline = gpd.read_file(ne_file)
 nf_coastline = gpd.read_file(nf_file)
 nf_azi_coastline = gpd.read_file(nf_file_azi) # converted with qgis
 nf_azi2_coastline = nf_coastline.to_crs('ESRI:53032')  # converted with shapely
-coastline = nf_azi2_coastline
+cancoast_azi = gpd.read_file(cancoast).to_crs('ESRI:53032')
+coastline = cancoast_azi
 outputfolder = r"C:\Users\CAMG038492\OneDrive - WSP O365\Documents\Climate Data\NF Power GIS\Coastline CSVs"
+
 
 # open list of csvs into a dictionary
 def open_csvs(folder):
@@ -56,6 +60,7 @@ def build_tree(points_of_interest=[], interpolate='', max_distance=0):
     # create database of coastline linestring verticies
     points = []
     geoms = []
+    expansion = []
     if len(points_of_interest) > 0:
         for geom in tqdm(coastline.geometry, "finding geometry"):
             for p in points_of_interest:
@@ -67,24 +72,35 @@ def build_tree(points_of_interest=[], interpolate='', max_distance=0):
                     break
     else:
         geoms = coastline.geometry
-
     for geom in tqdm(geoms, desc = "Building Tree:"):
         if geom.geom_type == 'Point':
+            expansion.append(1)
             points.extend(geom.coords[0])
         elif geom.geom_type == 'LineString':
-            points.extend(densify_linestring(geom, interpolate))
+            extended = densify_linestring(geom, interpolate)
+            points.extend(extended)
+            expansion.append(len(extended))
             #points.extend(list(geom.coords))
         elif geom.geom_type == 'MultiLineString':
+            expansion.append(0)
             for line in geom.geoms:
-                points.extend(densify_linestring(line, interpolate))
+                extended = densify_linestring(line, interpolate)
+                points.extend(extended)
+                expansion[-1] += len(extended)
                 #points.extend(list(line.coords))
 
     # create tree of coastlines
+    metadata = []
+    for i in tqdm(range(len(expansion))):
+        m = (coastline.iloc[i]["CSI_2000s"], coastline.iloc[i]["CSI_2090s"], coastline.iloc[i]["CSI_diff"])
+        for j in range(expansion[i]):
+            metadata.append(m)
+    metadata = np.array(metadata)
     coords = np.array(points)
     tree = cKDTree(coords)
-    return coords, tree
+    return coords, tree, metadata
 
-coords, tree = build_tree()
+coords, tree, metadata = build_tree()
 
 precise = False
 
@@ -104,11 +120,12 @@ def nearest(lat, lon, tree, coords, crs = 'ESRI:53032'):
     if precise:
         i, idxs = tree.query([x, y], k=10)
         candidates = [Point(*coords[idx]) for idx in idxs]
-        c, near_tree = build_tree(candidates, 1, i[-1]*2)
+        c, near_tree, _ = build_tree(candidates, 1, i[-1]*2)
         i, idx = near_tree.query([x, y])
         nearestpt = c[idx]
     else:
         _, nearestpt = tree.query([x,y])
+        pt_meta = metadata[nearestpt]
         nearestpt = coords[nearestpt]
 
     # convert point to a Point again
@@ -126,6 +143,7 @@ def nearest(lat, lon, tree, coords, crs = 'ESRI:53032'):
     outd = {}
     outd['distance'] = geodesic((lat, lon), (outy, outx)).kilometers
     outd['position'] = [outy, outx]
+    outd['metadata'] = pt_meta
     if precise: outd['candidate_pos'] = [nearest_candidate_4326.y,nearest_candidate_4326.x]
     return outd
 
@@ -139,6 +157,18 @@ def v_nearest(row, which:str):
         return nearest(lat = row.Y, lon = row.X, tree = tree, coords = coords)['position'][0]
     if which == "lon":
         return nearest(lat = row.Y, lon = row.X, tree = tree, coords = coords)['position'][1]
+    if which == "all":
+        n = nearest(lat = row.Y, lon = row.X, tree = tree, coords = coords)
+        return [n["distance"], n["position"], n["position"][0], n["position"][1], n['metadata'][0], n['metadata'][1], n['metadata'][2]]
+    if which == "csi":
+        n = nearest(lat = row.Y, lon = row.X, tree = tree, coords = coords)
+        return [n['metadata'][0], n['metadata'][1], n['metadata'][2]]
+    if which == "csi_2000s":
+        return nearest(lat = row.Y, lon = row.X, tree = tree, coords = coords)['metadata'][0]
+    if which == "csi_2090s":
+        return nearest(lat = row.Y, lon = row.X, tree = tree, coords = coords)['metadata'][1]
+    if which == "csi_diff":
+        return nearest(lat = row.Y, lon = row.X, tree = tree, coords = coords)['metadata'][2]
     if which == "candidate_lat" and precise:
         return nearest(lat = row.Y, lon = row.X, tree = tree, coords = coords)['candidate_pos'][0]
     if which == "candidate_lon" and precise:
@@ -178,7 +208,7 @@ def v_angles(row, km):
 for site,df in open_csvs(sitesfolder).items():
     name = site
     sites = df
-
+    if name == "fullpoints.csv": continue
 
     # take a small test selection of sites
     create_sample = False
@@ -186,10 +216,16 @@ for site,df in open_csvs(sitesfolder).items():
         sites = sites.sample(n=10)
         sites.to_csv(os.path.join(outputfolder, "sample-sites.csv"))
 
-    sites["Nearest coast (km)"] = sites.apply(v_nearest, which="dist", axis = 1)
-    sites["Nearest coast (lat,lon)"] = sites.apply(v_nearest, which="both", axis = 1)
-    sites["Nearest coast (lat)"] = sites.apply(v_nearest, which="lat", axis = 1)
-    sites["Nearest coast (lon)"] = sites.apply(v_nearest, which="lon", axis = 1)
+    # sites["Nearest coast (km)"] = sites.apply(v_nearest, which="dist", axis = 1)
+    # sites["Nearest coast (lat,lon)"] = sites.apply(v_nearest, which="both", axis = 1)
+    # sites["Nearest coast (lat)"] = sites.apply(v_nearest, which="lat", axis = 1)
+    # sites["Nearest coast (lon)"] = sites.apply(v_nearest, which="lon", axis = 1)
+    # csi = sites.apply(v_nearest, which="csi", axis = 1)
+    # sites[["CSI_2000s", "CSI_2090s", "CSI_diff"]] = pd.DataFrame(csi.tolist(), index=sites.index)
+    nearest_data = sites.apply(v_nearest, which="all", axis = 1)
+    sites[["Nearest coast (km)", "Nearest coast (lat,lon)", "Nearest coast (lat)", "Nearest coast (lon)", "CSI_2000s", "CSI_2090s", "CSI_diff"]] = pd.DataFrame(nearest_data.tolist(), index=sites.index)
+
+
     # sites["Nearest candidate (lat)"] = sites.apply(v_nearest, which="candidate_lat", axis = 1)
     # sites["Nearest candidate (lon)"] = sites.apply(v_nearest, which="candidate_lon", axis = 1)
     #sites["Coastline coverage at 50km (%)"] = sites.apply(v_angles, km = 50, axis = 1)
@@ -199,7 +235,8 @@ for site,df in open_csvs(sitesfolder).items():
     # exporting
     if export := True:
         if create_sample:
-            sites[["Nearest coast (lat)", "Nearest coast (lon)", "Nearest candidate (lat)", "Nearest candidate (lon)"]].to_csv(os.path.join(outputfolder, "sample-nearest-coast.csv"))
+            sites.to_csv(os.path.join(outputfolder, "sample-nearest-coast.csv"))
+            print("Sample Created")
             exit()
         else:
             newfolder = r"C:\Users\CAMG038492\OneDrive - WSP O365\Documents\Climate Data\NF Power GIS\Coastline CSVs\Exports"
