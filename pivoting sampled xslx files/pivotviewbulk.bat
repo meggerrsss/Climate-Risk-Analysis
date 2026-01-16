@@ -1,3 +1,4 @@
+REM run a random python file first then cd to the right subfolder
 call conda activate data
 papermill pivotwhisker.ipynb pivotout.ipynb -p increment 0
 papermill pivotwhisker.ipynb pivotout.ipynb -p increment 1
@@ -24,12 +25,6 @@ papermill pivotwhisker.ipynb pivotout.ipynb -p increment 21
 papermill pivotwhisker.ipynb pivotout.ipynb -p increment 22
 papermill pivotwhisker.ipynb pivotout.ipynb -p increment 23
 papermill pivotwhisker.ipynb pivotout.ipynb -p increment 24
-papermill pivotwhisker.ipynb pivotout.ipynb -p increment 25
-papermill pivotwhisker.ipynb pivotout.ipynb -p increment 26
-papermill pivotwhisker.ipynb pivotout.ipynb -p increment 27
-papermill pivotwhisker.ipynb pivotout.ipynb -p increment 28
-papermill pivotwhisker.ipynb pivotout.ipynb -p increment 29
-papermill pivotwhisker.ipynb pivotout.ipynb -p increment 30
 
 
 
